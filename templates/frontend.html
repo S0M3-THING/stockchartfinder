@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Pattern Analyzer</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Stock Pattern Analyzer</h1>
+        <label for="imageInput" class="file-label">Choose a stock trend image:</label>
+        <input type="file" id="imageInput" title="Upload an image to analyze">
+        <button onclick="analyzeImage()" class="analyze-btn">Analyze</button>
+        
+        <div id="result-container">
+            <h3>Analysis Result:</h3>
+            <p id="result"></p>
+            <p id="finalDecision" class="final-decision"></p>
+            <img id="uploadedImage" class="uploaded-image" alt="Uploaded stock trend image">
+        </div>
+    </div>
+
+    <script>
+        function analyzeImage() {
+            const input = document.getElementById("imageInput").files[0];
+            if (!input) {
+                Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please select an image to analyze!' });
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("image", input);
+
+            fetch("/analyze", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result").innerHTML = `
+                    <strong>ResNet:</strong> Closest Match: ${data.resnet_match} (Confidence: ${data.resnet_confidence}%) - ${data.resnet_decision.toUpperCase()}
+                `;
+
+                let finalText = "";
+                if (data.resnet_decision === "buy") {
+                    finalText = "Final Decision: BUY";
+                    document.getElementById("finalDecision").className = "final-decision buy-text";
+                } else if (data.resnet_decision === "sell") {
+                    finalText = "Final Decision: SELL";
+                    document.getElementById("finalDecision").className = "final-decision sell-text";
+                }
+                document.getElementById("finalDecision").innerText = finalText;
+
+                const imgURL = URL.createObjectURL(input);
+                document.getElementById("uploadedImage").src = imgURL;
+                document.getElementById("uploadedImage").style.display = "block";
+            })
+            .catch(error => Swal.fire({ icon: 'error', title: 'Error', text: 'An error occurred while processing the image.' }));
+        }
+    </script>
+</body>
+</html>
