@@ -18,6 +18,30 @@ root_dir = "./cheatsheet"
 database_images = list(buy_sell_mapping.keys())
 database_paths = [os.path.join(root_dir, img) for img in database_images]
 
+image_name_map = {
+    "AT.jpg": "Ascending Triangle",
+    "BB.jpg": "Broadening Bottom",
+    "BT.jpg": "Broadening Top",
+    "CAH.jpg": "Cup and Handle",
+    "DBW.jpg": "Double Bottom",
+    "DT.jpg": "Descending Triangle",
+    "DTM.jpg": "Double Top",
+    "FF.jpg": "Falling Flag",
+    "FP.jpg": "Falling Pennant",
+    "FW.jpg": "Falling Wedge",
+    "HAS.jpg": "Head and Shoulder",
+    "ICAH.jpg": "Inverse Cup and Handle",
+    "IHAS.jpg": "Inverse Head and Shoulder",
+    "RB.jpg": "Rounding Bottom",
+    "RF.jpg": "Rising Flag",
+    "RP.jpg": "Rising Pennant",
+    "RT.jpg": "Rounding Top",
+    "RW.jpg": "Rising Wedge",
+    "TB.jpg": "Triple Bottom",
+    "TT.jpg": "Triple Top"
+}
+
+
 database_features_resnet = np.array([extract_features_resnet(resnet_model, img) for img in database_paths])
 
 def delete_old_images():
@@ -58,13 +82,16 @@ def analyze():
         closest_resnet_idx = np.argmax(similarities_resnet)
         resnet_match = database_images[closest_resnet_idx]
         confidence_resnet = float(similarities_resnet[0, closest_resnet_idx] * 100)
+        closest_image_name = image_name_map.get(resnet_match, "Unknown Image")
+
 
         resnet_decision = buy_sell_mapping[resnet_match]
 
         return jsonify({
             "resnet_match": resnet_match,
             "resnet_confidence": confidence_resnet,
-            "resnet_decision": resnet_decision
+            "resnet_decision": resnet_decision,
+            "resnet_imagename": closest_image_name
         })
     
     except Exception as e:

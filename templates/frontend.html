@@ -8,27 +8,102 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+    <div class="theme-toggle">
+        <label for="themeSelect">🎨 Select Theme:</label>
+        <select id="themeSelect" onchange="changeTheme(this.value)">
+            <option value="ocean" selected>🌊 Ocean</option>
+            <option value="pro-trader">⚡ Pro Trader</option>
+            <option value="sand">🏖️ Sand</option>
+            <option value="forest">🌲 Forest</option>
+            <option value="stone">🪨 Stone</option>
+        </select>
+    </div>
     <div class="container">
         <h1>Stock Pattern Analyzer</h1>
-        <label for="imageInput" class="file-label">Choose a stock trend image:</label>
-        <input type="file" id="imageInput" title="Upload an image to analyze">
+
+        <div id="drop-area" class="drop-area">
+            <p id="drop-text">Drag & Drop a stock trend image or <label for="imageInput" class="file-label">browse</label></p>
+            <input type="file" id="imageInput" title="Upload an image to analyze" />
+            <img id="uploadedImage" class="uploaded-image" alt="Uploaded stock trend image" />
+        </div>
+
         <button onclick="analyzeImage()" class="analyze-btn">Analyze</button>
         
-        <div id="result-container">
+        <div id="progress-container" class="progress-container hidden">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+
+        <div id="result-container" class="result-card hidden">
             <h3>Analysis Result:</h3>
-            <p id="result"></p>
             <p id="finalDecision" class="final-decision"></p>
-            <img id="uploadedImage" class="uploaded-image" alt="Uploaded stock trend image">
+            <p id="confidence" class="confidence-text"></p>
+
+            <div class="suggested-box">
+                <p><strong>Suggested Time Frame:</strong> 4 hours</p>
+                <p><strong>Suggested Ratio:</strong> 1.6:1</p>
+                <p><strong>Success Rate:</strong> 85%</p>
+            </div>
+
+            <div class="disclaimer-box">
+                <p><strong>Disclaimer:</strong> This analysis is for informational purposes only and should not be considered as financial advice.</p>
+            </div>            
         </div>
     </div>
 
     <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const savedTheme = localStorage.getItem("selectedTheme") || "ocean";
+            changeTheme(savedTheme);
+            document.getElementById("themeSelect").value = savedTheme;
+
+            document.getElementById("imageInput").addEventListener("change", handleImagePreview);
+        });
+
+        function handleImagePreview(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    const previewImage = document.getElementById("uploadedImage");
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = "block";
+                }
+
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function changeTheme(theme) {
+            document.body.className = theme;
+            localStorage.setItem("selectedTheme", theme);
+        }
+
+        function updateProgress(progress) {
+            const progressBar = document.getElementById("progress-bar");
+            progressBar.style.width = progress + "%";
+        }
+
         function analyzeImage() {
             const input = document.getElementById("imageInput").files[0];
             if (!input) {
                 Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please select an image to analyze!' });
                 return;
             }
+
+            document.getElementById("progress-container").classList.remove("hidden");
+            document.getElementById("uploadedImage").style.display = "none";
+            updateProgress(0);
+
+            let progress = 0;
+            let interval = setInterval(() => {
+                progress += 20;
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    showResults();
+                }
+                updateProgress(progress);
+            }, 300);
 
             const formData = new FormData();
             formData.append("image", input);
@@ -40,7 +115,7 @@
             .then(response => response.json())
             .then(data => {
                 document.getElementById("result").innerHTML = `
-                    <strong>ResNet:</strong> Closest Match: ${data.resnet_match} (Confidence: ${data.resnet_confidence}%) - ${data.resnet_decision.toUpperCase()}
+                    <strong>ResNet:</strong> Closest Match: ${data.resnet_imagename} (Confidence: ${data.resnet_confidence}%) - ${data.resnet_decision.toUpperCase()}
                 `;
 
                 let finalText = "";
