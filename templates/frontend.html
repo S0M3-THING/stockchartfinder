@@ -8,17 +8,22 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
+    <div id="welcome-screen" class="visible">
+        <h1>Welcome to ezpzstocks</h1>
+        <button id="welcome-btn" onclick="hideWelcomeScreen()">Click here to make money</button>
+    </div>
+
     <div class="theme-toggle">
         <label for="themeSelect">🎨 Select Theme:</label>
         <select id="themeSelect" onchange="changeTheme(this.value)">
             <option value="ocean" selected>🌊 Ocean</option>
-            <option value="pro-trader">⚡ Pro Trader</option>
+            <option value="professional">⚡ Professional</option>
             <option value="sand">🏖️ Sand</option>
             <option value="forest">🌲 Forest</option>
             <option value="stone">🪨 Stone</option>
         </select>
     </div>
-    <div class="container">
+    <div class="container hidden" id="analysis-container">
         <h1>Stock Pattern Analyzer</h1>
 
         <div id="drop-area" class="drop-area">
@@ -37,19 +42,17 @@
             <h3>Analysis Result:</h3>
             <p id="finalDecision" class="final-decision"></p>
             <p id="confidence" class="confidence-text"></p>
-            <p id="closestImageName" class="closest-image-name"></p>
-        </div>
-    </div>
-
-    <div id="sidebar">
-        <div class="suggested-box">
-            <p><strong>Suggested Time Frame:</strong> 4 hours</p>
-            <p><strong>Suggested Ratio:</strong> 1.6:1</p>
-            <p><strong>Success Rate:</strong> 85%</p>
         </div>
 
-        <div class="disclaimer-box">
-            <p><strong>Disclaimer:</strong> This analysis is for informational purposes only and should not be considered as financial advice.</p>
+        <div id="sidebar" style="display:flex; justify-content: space-between; margin-top: 20px;">
+            <div class="suggested-box">
+                <p><strong>Suggested Time Frame:</strong> 4 hours</p>
+                <p><strong>Suggested Ratio:</strong> 1.6:1</p>
+            </div>
+
+            <div class="disclaimer-box">
+                <p><strong>Disclaimer:</strong> This analysis is for informational purposes only.</p>
+            </div>
         </div>
     </div>
 
@@ -61,6 +64,11 @@
 
             document.getElementById("imageInput").addEventListener("change", handleImagePreview);
         });
+
+        function hideWelcomeScreen() {
+            document.getElementById("welcome-screen").classList.remove("visible");
+            document.getElementById("analysis-container").classList.remove("hidden");
+        }
 
         function handleImagePreview(event) {
             const file = event.target.files[0];
@@ -127,9 +135,7 @@
                 }
 
                 document.getElementById("finalDecision").innerText = finalText;
-                document.getElementById("confidence").innerText = `Confidence: ${Math.round(data.resnet_confidence)}%`; 
-
-                document.getElementById("closestImageName").innerText = `${data.resnet_imagename}`;
+                document.getElementById("confidence").innerText = `Confidence: ${Math.round(data.resnet_confidence)}%`;
 
                 const imgURL = URL.createObjectURL(input);
                 document.getElementById("uploadedImage").src = imgURL;

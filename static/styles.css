@@ -18,44 +18,14 @@
     --progress-bar-bg: #58afdd;
 }
 
-.pro-trader {
+.professional {
     --primary-bg: #1a1a1a;
     --container-bg: #333;
     --text-color: #fff;
-    --button-bg: #0f0;
-    --button-hover-bg: #0d0;
+    --button-bg: #007BFF;
+    --button-hover-bg: #0056b3;
     --drop-border: #f00;
-    --progress-bar-bg: #0f0;
-}
-
-.sand {
-    --primary-bg: #d6cecc;
-    --container-bg: #f0e8e5;
-    --text-color: #454549;
-    --button-bg: #ba8778;
-    --button-hover-bg: #8b5e57;
-    --drop-border: #ddbdb0;
-    --progress-bar-bg: #ba8778;
-}
-
-.forest {
-    --primary-bg: #B9C384;
-    --container-bg: #9EAE6F;
-    --text-color: #4F6F5A;
-    --button-bg: #AAAO4E;
-    --button-hover-bg: #819967;
-    --drop-border: #868850;
-    --progress-bar-bg: #4F6F5A;
-}
-
-.stone {
-    --primary-bg: #646464;
-    --container-bg: #e4e4e4;
-    --text-color: #383838;
-    --button-bg: #7b7b7b;
-    --button-hover-bg: #6c6c6c;
-    --drop-border: #9b9c9c;
-    --progress-bar-bg: #949494;
+    --progress-bar-bg: #007BFF;
 }
 
 body {
@@ -207,10 +177,10 @@ h1 {
 .disclaimer-box {
     background-color: #f8d7da;
     border-radius: 8px;
-    padding: 15px;
+    padding: 10px; /* Reduced padding */
     margin-top: 15px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    font-size: 14px;
+    font-size: 12px; /* Reduced font size */
     color: #721c24;
 }
 
@@ -224,16 +194,48 @@ h1 {
     align-items: flex-start;
 }
 
-#result-container .suggested-box,
-#result-container .disclaimer-box {
-    width: 45%;
+#result-container .suggested-box {
+    width: 45%; /* Adjusted sizes */
     position: relative;
 }
 
-#result-container .suggested-box {
-    top: 20px;
+#result-container .disclaimer-box {
+    width: 30%; /* Adjusted sizes */
+    position: relative;
 }
 
-#result-container .disclaimer-box {
+#welcome-screen {
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 1s;
+    z-index: 999;
+}
+
+#welcome-screen.visible {
+    opacity: 1;
+}
+
+#welcome-btn {
+    margin-top: 20px;
+    background-color: var(--button-bg);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#welcome-btn:hover {
+    background-color: var(--button-hover-bg);
 }
