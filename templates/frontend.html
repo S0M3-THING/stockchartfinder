@@ -37,16 +37,19 @@
             <h3>Analysis Result:</h3>
             <p id="finalDecision" class="final-decision"></p>
             <p id="confidence" class="confidence-text"></p>
+            <p id="closestImageName" class="closest-image-name"></p>
+        </div>
+    </div>
 
-            <div class="suggested-box">
-                <p><strong>Suggested Time Frame:</strong> 4 hours</p>
-                <p><strong>Suggested Ratio:</strong> 1.6:1</p>
-                <p><strong>Success Rate:</strong> 85%</p>
-            </div>
+    <div id="sidebar">
+        <div class="suggested-box">
+            <p><strong>Suggested Time Frame:</strong> 4 hours</p>
+            <p><strong>Suggested Ratio:</strong> 1.6:1</p>
+            <p><strong>Success Rate:</strong> 85%</p>
+        </div>
 
-            <div class="disclaimer-box">
-                <p><strong>Disclaimer:</strong> This analysis is for informational purposes only and should not be considered as financial advice.</p>
-            </div>            
+        <div class="disclaimer-box">
+            <p><strong>Disclaimer:</strong> This analysis is for informational purposes only and should not be considered as financial advice.</p>
         </div>
     </div>
 
@@ -114,10 +117,6 @@
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById("result").innerHTML = `
-                    <strong>ResNet:</strong> Closest Match: ${data.resnet_imagename} (Confidence: ${data.resnet_confidence}%) - ${data.resnet_decision.toUpperCase()}
-                `;
-
                 let finalText = "";
                 if (data.resnet_decision === "buy") {
                     finalText = "Final Decision: BUY";
@@ -126,14 +125,26 @@
                     finalText = "Final Decision: SELL";
                     document.getElementById("finalDecision").className = "final-decision sell-text";
                 }
+
                 document.getElementById("finalDecision").innerText = finalText;
+                document.getElementById("confidence").innerText = `Confidence: ${Math.round(data.resnet_confidence)}%`; 
+
+                document.getElementById("closestImageName").innerText = `${data.resnet_imagename}`;
 
                 const imgURL = URL.createObjectURL(input);
                 document.getElementById("uploadedImage").src = imgURL;
                 document.getElementById("uploadedImage").style.display = "block";
             })
-            .catch(error => Swal.fire({ icon: 'error', title: 'Error', text: 'An error occurred while processing the image.' }));
+            .catch(error => {
+                console.error("Error:", error);
+                Swal.fire({ icon: 'error', title: 'Error', text: 'An error occurred while processing the image.' });
+            });
         }
+        
+        function showResults() {
+            document.getElementById("result-container").classList.remove("hidden");
+        }
+
     </script>
 </body>
 </html>

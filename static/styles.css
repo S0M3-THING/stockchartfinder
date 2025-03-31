@@ -217,3 +217,23 @@ h1 {
 .disclaimer-box p {
     margin: 5px 0;
 }
+
+#result-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+#result-container .suggested-box,
+#result-container .disclaimer-box {
+    width: 45%;
+    position: relative;
+}
+
+#result-container .suggested-box {
+    top: 20px;
+}
+
+#result-container .disclaimer-box {
+    top: 0;
+}
