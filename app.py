@@ -6,7 +6,6 @@ from cheatsheet import load_resnet, extract_features_resnet, buy_sell_mapping
 import uuid
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-import gunicorn
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
@@ -71,3 +70,8 @@ def analyze():
     except Exception as e:
         print("Error:", str(e))
         return jsonify({"error": "An error occurred", "details": str(e)}), 500
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5001))
+    app.run(debug=False, host="0.0.0.0", port=port)
