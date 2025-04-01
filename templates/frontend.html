@@ -3,9 +3,325 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stock Pattern Analyzer</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <title>EZPZSTOCKS - Stock Pattern Analyzer</title>
+    <!-- Material UI and Required Dependencies -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <script src="https://unpkg.com/@mui/material@latest/umd/material-ui.development.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react@latest/umd/react.development.js" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react-dom@latest/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary-color: #3f51b5;
+            --secondary-color: #f50057;
+            --background-color: #f5f5f5;
+            --card-color: #ffffff;
+            --text-color: #333333;
+            --accent-color: #2196f3;
+            --success-color: #4caf50;
+            --warning-color: #ff9800;
+            --error-color: #f44336;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: background-color 0.3s ease;
+        }
+
+        /* Theme Styles */
+        body.ocean {
+            --primary-color: #1976d2;
+            --secondary-color: #03a9f4;
+            --background-color: #e3f2fd;
+            --card-color: #ffffff;
+            --text-color: #0d47a1;
+            --accent-color: #00bcd4;
+        }
+
+        body.pro-trader {
+            --primary-color: #212121;
+            --secondary-color: #ff9800;
+            --background-color: #263238;
+            --card-color: #37474f;
+            --text-color: #eceff1;
+            --accent-color: #ffc107;
+        }
+
+        body.sand {
+            --primary-color: #ffb300;
+            --secondary-color: #ff8f00;
+            --background-color: #fff8e1;
+            --card-color: #ffffff;
+            --text-color: #bf360c;
+            --accent-color: #ffd54f;
+        }
+
+        body.forest {
+            --primary-color: #388e3c;
+            --secondary-color: #66bb6a;
+            --background-color: #e8f5e9;
+            --card-color: #ffffff;
+            --text-color: #1b5e20;
+            --accent-color: #81c784;
+        }
+
+        body.stone {
+            --primary-color: #616161;
+            --secondary-color: #9e9e9e;
+            --background-color: #eeeeee;
+            --card-color: #f5f5f5;
+            --text-color: #212121;
+            --accent-color: #bdbdbd;
+        }
+
+        .welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000000;
+            z-index: 1000;
+        }
+
+        .background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.7;
+        }
+
+        .welcome-text {
+            position: relative;
+            text-align: center;
+            color: white;
+            z-index: 10;
+        }
+
+        .welcome-text h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (max-width: 900px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-panel, .output-panel, .suggestion-panel {
+            background-color: var(--card-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-panel:hover, .output-panel:hover, .suggestion-panel:hover {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .drop-area {
+            border: 2px dashed var(--primary-color);
+            border-radius: 8px;
+            padding: 2rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .drop-area.drag-over {
+            background-color: rgba(var(--primary-color-rgb), 0.1);
+            border-color: var(--accent-color);
+        }
+
+        .uploaded-image {
+            max-width: 100%;
+            max-height: 300px;
+            display: none;
+            margin: 1rem auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .file-label {
+            color: var(--accent-color);
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .analyze-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .analyze-btn:hover {
+            background-color: var(--secondary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .progress-container {
+            margin: 1rem 0;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            height: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 0;
+            transition: width 0.3s ease;
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 4px;
+            background-color: rgba(var(--accent-color-rgb), 0.1);
+            margin-bottom: 0.5rem;
+        }
+
+        .buy-text {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .sell-text {
+            color: var(--error-color);
+            font-weight: bold;
+        }
+
+        .disclaimer {
+            font-size: 0.75rem;
+            color: #757575;
+            margin-top: 1rem;
+            padding: 0.5rem;
+            border-radius: 4px;
+            background-color: rgba(0,0,0,0.05);
+        }
+
+        .suggested-item {
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid var(--accent-color);
+            background-color: rgba(var(--accent-color-rgb), 0.05);
+        }
+
+        .theme-selector {
+            margin-bottom: 1rem;
+        }
+
+        .user-input-box {
+            margin-bottom: 1.5rem;
+        }
+
+        .user-input-field {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .user-input-field:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.2);
+        }
+
+        .user-input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        /* Convert RGB colors to variables for opacity */
+        :root {
+            --primary-color-rgb: 63, 81, 181;
+            --accent-color-rgb: 33, 150, 243;
+        }
+
+        body.ocean {
+            --primary-color-rgb: 25, 118, 210;
+            --accent-color-rgb: 0, 188, 212;
+        }
+
+        body.pro-trader {
+            --primary-color-rgb: 33, 33, 33;
+            --accent-color-rgb: 255, 193, 7;
+        }
+
+        body.sand {
+            --primary-color-rgb: 255, 179, 0;
+            --accent-color-rgb: 255, 213, 79;
+        }
+
+        body.forest {
+            --primary-color-rgb: 56, 142, 60;
+            --accent-color-rgb: 129, 199, 132;
+        }
+
+        body.stone {
+            --primary-color-rgb: 97, 97, 97;
+            --accent-color-rgb: 189, 189, 189;
+        }
+    </style>
 </head>
 <body>
     <div id="welcome-screen" class="welcome-screen">
@@ -14,65 +330,136 @@
         </video>
         <div class="welcome-text">
             <h1>Welcome to EZPZSTOCKS</h1>
-            <button id="enter-site">Click Here to Get Rich</button>
+            <button id="enter-site" class="analyze-btn">Click Here to Get Rich</button>
         </div>
     </div>
-    <div id="main-content" class="hidden">
-        <div class="theme-toggle">
-            <label for="themeSelect">🎨 Select Theme:</label>
-            <select id="themeSelect" onchange="changeTheme(this.value)">
-                <option value="ocean" selected>🌊 Ocean</option>
-                <option value="pro-trader">⚡ Pro Trader</option>
-                <option value="sand">🏖️ Sand</option>
-                <option value="forest">🌲 Forest</option>
-                <option value="stone">🪨 Stone</option>
-            </select>
-        </div>
 
-        <div class="container">
+    <div id="main-content" class="hidden main-container">
+        <div class="header">
             <h1>Stock Pattern Analyzer</h1>
+            
+            <div class="theme-selector">
+                <label for="themeSelect">🎨 Theme:</label>
+                <select id="themeSelect" onchange="changeTheme(this.value)" class="user-input-field" style="width: auto; padding: 0.5rem;">
+                    <option value="ocean" selected>🌊 Ocean</option>
+                    <option value="pro-trader">⚡ Pro Trader</option>
+                    <option value="sand">🏖️ Sand</option>
+                    <option value="forest">🌲 Forest</option>
+                    <option value="stone">🪨 Stone</option>
+                </select>
+            </div>
+        </div>
 
-            <div class="info-box">
+        <div class="content-grid">
+            <!-- Left Panel - User Input Section -->
+            <div class="input-panel">
+                <h2>Your Input</h2>
+                
+                <div class="user-input-box">
+                    <label for="userInput" class="user-input-label">Enter Stock Symbol or Notes:</label>
+                    <input type="text" id="userInput" class="user-input-field" placeholder="E.g., AAPL, SPY, or trading notes">
+                </div>
+                
+                <div class="user-input-box">
+                    <label for="timeFrame" class="user-input-label">Time Frame:</label>
+                    <select id="timeFrame" class="user-input-field">
+                        <option value="5m">5 Minutes</option>
+                        <option value="15m">15 Minutes</option>
+                        <option value="30m">30 Minutes</option>
+                        <option value="1h">1 Hour</option>
+                        <option value="2h" selected>2 Hours</option>
+                        <option value="4h">4 Hours</option>
+                        <option value="1d">Daily</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Center Panel - Image Upload & Analysis -->
+            <div class="input-panel">
+                <h2>Upload Stock Chart</h2>
                 <p>Upload an image of a stock trend, and our AI will analyze its pattern!</p>
+
+                <div id="drop-area" class="drop-area">
+                    <p id="drop-text">Drag & Drop a stock chart image</p>
+                    <p>or</p>
+                    <button id="fileSelectBtn" class="analyze-btn" style="background-color: var(--secondary-color); margin: 1rem auto; width: auto; padding: 0.5rem 1rem;">
+                        <span class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">upload_file</span>
+                        Choose File
+                    </button>
+                    <input type="file" id="imageInput" class="file-input" accept="image/*" title="Upload an image to analyze" />
+                    <img id="uploadedImage" class="uploaded-image" alt="Uploaded stock trend image" />
+                </div>
+
+                <button onclick="analyzeImage()" class="analyze-btn">
+                    <span class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">analytics</span>
+                    Analyze Pattern
+                </button>
+
+                <div id="progress-container" class="progress-container hidden">
+                    <div id="progress-bar" class="progress-bar"></div>
+                </div>
+
+                <div id="result-container" class="hidden">
+                    <h3>Analysis Results</h3>
+                    <div class="result-row" style="background-color: rgba(var(--primary-color-rgb), 0.1);">
+                        <span><strong>Decision:</strong></span>
+                        <span id="finalDecision" class="final-decision">-</span>
+                        <span><strong>Confidence:</strong></span>
+                        <span id="confidence">-</span>
+                        <span><strong>Pattern:</strong></span>
+                        <span id="closestImageName">-</span>
+                    </div>
+                </div>
+                
+                <div class="disclaimer">
+                    <strong>Disclaimer:</strong> This analysis is for informational purposes only and should not be considered as financial advice.
+                </div>
             </div>
 
-            <div id="drop-area" class="drop-area">
-                <p id="drop-text">Drag & Drop a stock trend image or <label for="imageInput" class="file-label">browse</label></p>
-                <input type="file" id="imageInput" title="Upload an image to analyze" />
-                <img id="uploadedImage" class="uploaded-image" alt="Uploaded stock trend image" />
-            </div>
-
-            <button onclick="analyzeImage()" class="analyze-btn">Analyze</button>
-        </div>
-
-        <div id="progress-container" class="progress-container hidden">
-            <div id="progress-bar" class="progress-bar"></div>
-        </div>
-
-        <div id="result-container" class="result-card hidden">
-            <p id="finalDecision" class="final-decision"></p>
-            <p id="confidence" class="confidence-text"></p>
-            <p id="closestImageName" class="closest-image-name"></p>
-        </div>
-
-        <div id="sidebar">
-            <div class="suggested-box">
-                <p><strong>Suggested Time Frame:</strong> 2 hours</p>
-                <p><strong>Suggested Ratio:</strong> 1:2</p>
-            </div>
-
-            <div class="disclaimer-box">
-                <p><strong>Disclaimer:</strong> This analysis is for informational purposes only and should not be considered as financial advice.</p>
+            <!-- Right Panel - Suggestions -->
+            <div class="suggestion-panel">
+                <h2>Trading Suggestions</h2>
+                
+                <div class="suggested-item">
+                    <strong>Suggested Time Frame:</strong> 2 hours
+                </div>
+                
+                <div class="suggested-item">
+                    <strong>Suggested Risk/Reward Ratio:</strong> 1:2
+                </div>
+                
+                <div class="suggested-item">
+                    <strong>Volume Check:</strong> Confirm volume supports the pattern
+                </div>
+                
+                <div class="suggested-item">
+                    <strong>Support/Resistance:</strong> Look for key levels
+                </div>
+                
+                <div class="suggested-item">
+                    <strong>Best Practices:</strong>
+                    <ul>
+                        <li>Always use stop losses</li>
+                        <li>Trade with the trend</li>
+                        <li>Consider overall market conditions</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-   
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             const dropArea = document.getElementById("drop-area");
             const input = document.getElementById("imageInput");
+            const fileSelectBtn = document.getElementById("fileSelectBtn");
 
+            // Connect file button to hidden input
+            fileSelectBtn.addEventListener("click", () => {
+                input.click();
+            });
+
+            // Drag and drop events
             dropArea.addEventListener("dragover", (event) => {
                 event.preventDefault();
                 dropArea.classList.add("drag-over");
@@ -83,30 +470,28 @@
             });
 
             dropArea.addEventListener("drop", (event) => {
-            event.preventDefault();
-            dropArea.classList.remove("drag-over");
+                event.preventDefault();
+                dropArea.classList.remove("drag-over");
 
-            if (event.dataTransfer.files.length > 0) {
-                input.files = event.dataTransfer.files;
-                handleImagePreview({ target: input }); 
-            }
-        });
+                if (event.dataTransfer.files.length > 0) {
+                    input.files = event.dataTransfer.files;
+                    handleImagePreview({ target: input }); 
+                }
+            });
 
-        input.addEventListener("change", handleImagePreview);
+            input.addEventListener("change", handleImagePreview);
 
-
+            // Welcome screen
             document.getElementById("enter-site").addEventListener("click", function() {
                 document.getElementById("welcome-screen").style.display = "none";
                 document.getElementById("main-content").classList.remove("hidden");
             });
 
+            // Set theme from localStorage or default
             const savedTheme = localStorage.getItem("selectedTheme") || "ocean";
             changeTheme(savedTheme);
             document.getElementById("themeSelect").value = savedTheme;
-
-            document.getElementById("imageInput").addEventListener("change", handleImagePreview);
         });
-
 
         function handleImagePreview(event) {
             const file = event.target.files[0];
@@ -117,6 +502,9 @@
                     const previewImage = document.getElementById("uploadedImage");
                     previewImage.src = e.target.result;
                     previewImage.style.display = "block";
+                    
+                    // Update drop text
+                    document.getElementById("drop-text").textContent = "Image ready for analysis";
                 }
 
                 reader.readAsDataURL(file);
@@ -136,12 +524,17 @@
         function analyzeImage() {
             const input = document.getElementById("imageInput").files[0];
             if (!input) {
-                Swal.fire({ icon: 'error', title: 'Oops...', text: 'Please select an image to analyze!' });
+                Swal.fire({ 
+                    icon: 'error', 
+                    title: 'No Image Selected', 
+                    text: 'Please select a stock chart image to analyze!',
+                    confirmButtonColor: getComputedStyle(document.body).getPropertyValue('--primary-color')
+                });
                 return;
             }
 
             document.getElementById("progress-container").classList.remove("hidden");
-            document.getElementById("uploadedImage").style.display = "none";
+            document.getElementById("result-container").classList.add("hidden");
             updateProgress(0);
 
             let progress = 0;
@@ -156,6 +549,15 @@
 
             const formData = new FormData();
             formData.append("image", input);
+            
+            // Add user input data if available
+            const userInput = document.getElementById("userInput").value;
+            const timeFrame = document.getElementById("timeFrame").value;
+            
+            if (userInput) {
+                formData.append("userInput", userInput);
+            }
+            formData.append("timeFrame", timeFrame);
 
             fetch("/analyze", {
                 method: "POST",
@@ -165,32 +567,31 @@
             .then(data => {
                 let finalText = "";
                 if (data.resnet_decision === "buy") {
-                    finalText = "Final Decision: LONG (BUY)";
-                    document.getElementById("finalDecision").className = "final-decision buy-text";
+                    finalText = "LONG (BUY)";
+                    document.getElementById("finalDecision").className = "buy-text";
                 } else if (data.resnet_decision === "sell") {
-                    finalText = "Final Decision: SHORT (SELL)";
-                    document.getElementById("finalDecision").className = "final-decision sell-text";
+                    finalText = "SHORT (SELL)";
+                    document.getElementById("finalDecision").className = "sell-text";
                 }
 
                 document.getElementById("finalDecision").innerText = finalText;
-                document.getElementById("confidence").innerText = `Confidence: ${Math.round(data.resnet_confidence)}%`; 
-
+                document.getElementById("confidence").innerText = `${Math.round(data.resnet_confidence)}%`; 
                 document.getElementById("closestImageName").innerText = `${data.resnet_imagename}`;
-
-                const imgURL = URL.createObjectURL(input);
-                document.getElementById("uploadedImage").src = imgURL;
-                document.getElementById("uploadedImage").style.display = "block";
             })
             .catch(error => {
                 console.error("Error:", error);
-                Swal.fire({ icon: 'error', title: 'Error', text: 'An error occurred while processing the image.' });
+                Swal.fire({ 
+                    icon: 'error', 
+                    title: 'Analysis Failed', 
+                    text: 'An error occurred while processing the image.',
+                    confirmButtonColor: getComputedStyle(document.body).getPropertyValue('--primary-color')
+                });
             });
         }
         
         function showResults() {
             document.getElementById("result-container").classList.remove("hidden");
         }
-
     </script>
 </body>
 </html>
