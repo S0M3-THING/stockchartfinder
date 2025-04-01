@@ -70,6 +70,31 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
+            const dropArea = document.getElementById("drop-area");
+            const input = document.getElementById("imageInput");
+
+            dropArea.addEventListener("dragover", (event) => {
+                event.preventDefault();
+                dropArea.classList.add("drag-over");
+            });
+
+            dropArea.addEventListener("dragleave", () => {
+                dropArea.classList.remove("drag-over");
+            });
+
+            dropArea.addEventListener("drop", (event) => {
+            event.preventDefault();
+            dropArea.classList.remove("drag-over");
+
+            if (event.dataTransfer.files.length > 0) {
+                input.files = event.dataTransfer.files;
+                handleImagePreview({ target: input }); 
+            }
+        });
+
+        input.addEventListener("change", handleImagePreview);
+
+
             document.getElementById("enter-site").addEventListener("click", function() {
                 document.getElementById("welcome-screen").style.display = "none";
                 document.getElementById("main-content").classList.remove("hidden");
@@ -140,10 +165,10 @@
             .then(data => {
                 let finalText = "";
                 if (data.resnet_decision === "buy") {
-                    finalText = "LONG";
+                    finalText = "Final Decision: LONG (BUY)";
                     document.getElementById("finalDecision").className = "final-decision buy-text";
                 } else if (data.resnet_decision === "sell") {
-                    finalText = "Final Decision: SHORT";
+                    finalText = "Final Decision: SHORT (SELL)";
                     document.getElementById("finalDecision").className = "final-decision sell-text";
                 }
 
