@@ -353,26 +353,10 @@
         <div class="content-grid">
             <!-- Left Panel - User Input Section -->
             <div class="input-panel">
-                <h2>Your Input</h2>
-                
-                <div class="user-input-box">
-                    <label for="userInput" class="user-input-label">Enter Stock Symbol or Notes:</label>
-                    <input type="text" id="userInput" class="user-input-field" placeholder="E.g., AAPL, SPY, or trading notes">
-                </div>
-                
-                <div class="user-input-box">
-                    <label for="timeFrame" class="user-input-label">Time Frame:</label>
-                    <select id="timeFrame" class="user-input-field">
-                        <option value="5m">5 Minutes</option>
-                        <option value="15m">15 Minutes</option>
-                        <option value="30m">30 Minutes</option>
-                        <option value="1h">1 Hour</option>
-                        <option value="2h" selected>2 Hours</option>
-                        <option value="4h">4 Hours</option>
-                        <option value="1d">Daily</option>
-                    </select>
-                </div>
-            </div>
+                <h2>How We Work</h2>
+                <p class="user-text">We take an input from you and run the input through the famous CNN called Resnet18. It then extracts features and compares your upload image to reference images of stock patterns.</p>
+            </div>            
+            
 
             <!-- Center Panel - Image Upload & Analysis -->
             <div class="input-panel">
@@ -429,19 +413,9 @@
                 </div>
                 
                 <div class="suggested-item">
-                    <strong>Volume Check:</strong> Confirm volume supports the pattern
-                </div>
-                
-                <div class="suggested-item">
-                    <strong>Support/Resistance:</strong> Look for key levels
-                </div>
-                
-                <div class="suggested-item">
                     <strong>Best Practices:</strong>
                     <ul>
                         <li>Always use stop losses</li>
-                        <li>Trade with the trend</li>
-                        <li>Consider overall market conditions</li>
                     </ul>
                 </div>
             </div>
@@ -550,14 +524,7 @@
             const formData = new FormData();
             formData.append("image", input);
             
-            // Add user input data if available
-            const userInput = document.getElementById("userInput").value;
-            const timeFrame = document.getElementById("timeFrame").value;
-            
-            if (userInput) {
-                formData.append("userInput", userInput);
-            }
-            formData.append("timeFrame", timeFrame);
+
 
             fetch("/analyze", {
                 method: "POST",
