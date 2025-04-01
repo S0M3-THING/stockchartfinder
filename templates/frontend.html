@@ -8,56 +8,73 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
-    <div id="welcome-screen" class="visible">
-        <h1>Welcome to ezpzstocks</h1>
-        <button id="welcome-btn" onclick="hideWelcomeScreen()">Click here to make money</button>
+    <div id="welcome-screen" class="welcome-screen">
+        <video autoplay muted loop class="background-video">
+            <source src="/static/background.mp4" type="video/mp4">
+        </video>
+        <div class="welcome-text">
+            <h1>Welcome to EZPZSTOCKS</h1>
+            <button id="enter-site">Click Here to Get Rich</button>
+        </div>
     </div>
-
-    <div class="theme-toggle">
-        <label for="themeSelect">🎨 Select Theme:</label>
-        <select id="themeSelect" onchange="changeTheme(this.value)">
-            <option value="ocean" selected>🌊 Ocean</option>
-            <option value="professional">⚡ Professional</option>
-            <option value="sand">🏖️ Sand</option>
-            <option value="forest">🌲 Forest</option>
-            <option value="stone">🪨 Stone</option>
-        </select>
-    </div>
-    <div class="container hidden" id="analysis-container">
-        <h1>Stock Pattern Analyzer</h1>
-
-        <div id="drop-area" class="drop-area">
-            <p id="drop-text">Drag & Drop a stock trend image or <label for="imageInput" class="file-label">browse</label></p>
-            <input type="file" id="imageInput" title="Upload an image to analyze" />
-            <img id="uploadedImage" class="uploaded-image" alt="Uploaded stock trend image" />
+    <div id="main-content" class="hidden">
+        <div class="theme-toggle">
+            <label for="themeSelect">🎨 Select Theme:</label>
+            <select id="themeSelect" onchange="changeTheme(this.value)">
+                <option value="ocean" selected>🌊 Ocean</option>
+                <option value="pro-trader">⚡ Pro Trader</option>
+                <option value="sand">🏖️ Sand</option>
+                <option value="forest">🌲 Forest</option>
+                <option value="stone">🪨 Stone</option>
+            </select>
         </div>
 
-        <button onclick="analyzeImage()" class="analyze-btn">Analyze</button>
-        
+        <div class="container">
+            <h1>Stock Pattern Analyzer</h1>
+
+            <div class="info-box">
+                <p>Upload an image of a stock trend, and our AI will analyze its pattern!</p>
+            </div>
+
+            <div id="drop-area" class="drop-area">
+                <p id="drop-text">Drag & Drop a stock trend image or <label for="imageInput" class="file-label">browse</label></p>
+                <input type="file" id="imageInput" title="Upload an image to analyze" />
+                <img id="uploadedImage" class="uploaded-image" alt="Uploaded stock trend image" />
+            </div>
+
+            <button onclick="analyzeImage()" class="analyze-btn">Analyze</button>
+        </div>
+
         <div id="progress-container" class="progress-container hidden">
             <div id="progress-bar" class="progress-bar"></div>
         </div>
 
         <div id="result-container" class="result-card hidden">
-            <h3>Analysis Result:</h3>
             <p id="finalDecision" class="final-decision"></p>
             <p id="confidence" class="confidence-text"></p>
+            <p id="closestImageName" class="closest-image-name"></p>
         </div>
 
-        <div id="sidebar" style="display:flex; justify-content: space-between; margin-top: 20px;">
+        <div id="sidebar">
             <div class="suggested-box">
-                <p><strong>Suggested Time Frame:</strong> 4 hours</p>
-                <p><strong>Suggested Ratio:</strong> 1.6:1</p>
+                <p><strong>Suggested Time Frame:</strong> 2 hours</p>
+                <p><strong>Suggested Ratio:</strong> 1:2</p>
             </div>
 
             <div class="disclaimer-box">
-                <p><strong>Disclaimer:</strong> This analysis is for informational purposes only.</p>
+                <p><strong>Disclaimer:</strong> This analysis is for informational purposes only and should not be considered as financial advice.</p>
             </div>
         </div>
     </div>
+   
 
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("enter-site").addEventListener("click", function() {
+                document.getElementById("welcome-screen").style.display = "none";
+                document.getElementById("main-content").classList.remove("hidden");
+            });
+
             const savedTheme = localStorage.getItem("selectedTheme") || "ocean";
             changeTheme(savedTheme);
             document.getElementById("themeSelect").value = savedTheme;
@@ -65,10 +82,6 @@
             document.getElementById("imageInput").addEventListener("change", handleImagePreview);
         });
 
-        function hideWelcomeScreen() {
-            document.getElementById("welcome-screen").classList.remove("visible");
-            document.getElementById("analysis-container").classList.remove("hidden");
-        }
 
         function handleImagePreview(event) {
             const file = event.target.files[0];
@@ -127,15 +140,17 @@
             .then(data => {
                 let finalText = "";
                 if (data.resnet_decision === "buy") {
-                    finalText = "Final Decision: BUY";
+                    finalText = "LONG";
                     document.getElementById("finalDecision").className = "final-decision buy-text";
                 } else if (data.resnet_decision === "sell") {
-                    finalText = "Final Decision: SELL";
+                    finalText = "Final Decision: SHORT";
                     document.getElementById("finalDecision").className = "final-decision sell-text";
                 }
 
                 document.getElementById("finalDecision").innerText = finalText;
-                document.getElementById("confidence").innerText = `Confidence: ${Math.round(data.resnet_confidence)}%`;
+                document.getElementById("confidence").innerText = `Confidence: ${Math.round(data.resnet_confidence)}%`; 
+
+                document.getElementById("closestImageName").innerText = `${data.resnet_imagename}`;
 
                 const imgURL = URL.createObjectURL(input);
                 document.getElementById("uploadedImage").src = imgURL;
