@@ -98,7 +98,11 @@ def analyze():
         print("Error:", str(e))
         return jsonify({"error": "An error occurred", "details": str(e)}), 500
 
-from flask import Response
+if __name__ == "__main__":
+    app.run(debug=False, host="127.0.0.1", port=5001) 
 
-def handler(request):
-    return Response(app(request.environ), mimetype="application/json")
+'''
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5001))
+    app.run(debug=False, host="0.0.0.0", port=port)
+'''
