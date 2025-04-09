@@ -129,5 +129,9 @@ if __name__ == "__main__":
     # Create a static directory if it doesn't exist
     if not os.path.exists("static"):
         os.makedirs("static")
+
+    
+    app.run(debug=False, host="127.0.0.1", port=5001)
+
         
-    app.run(debug=False, host="0.0.0.0", port=5001)
+    #app.run(debug=False, host="0.0.0.0", port=5001)
