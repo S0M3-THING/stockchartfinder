@@ -4,11 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>How We Work - EZPZSTOCKS</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-    <h1>How We Work</h1>
-    <p>By matching your stock charts to a data base of backtested stock patterns using the resnet18 CNN's feature extraction, we give you an action recommendation with confidence ratings so that you can get the best shot at beating the marke</p>
-    <a href="/" class="analyze-btn">Back to Home</a>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">EZPZ<span>STOCKS</span></div>
+            <div class="nav-links">
+                <a href="/">Dashboard</a>
+                <a href="/how_we_work" class="active">How We Work</a>
+                <a href="/trading_suggestions">Trading Suggestions</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>How We Work</h1>
+            <p>Understanding our AI-powered pattern recognition system</p>
+        </div>
+
+        <div class="analyzer-card">
+            <div class="card-header">
+                <h2>Our Technology</h2>
+                <p>Learn how our advanced algorithm helps you make better trading decisions</p>
+            </div>
+            
+            <div class="card-body">
+                <div class="info-section">
+                    <div class="info-section-header">
+                        <span class="material-icons">psychology</span>
+                        <h3>AI Pattern Recognition</h3>
+                    </div>
+                    <p>EZPZSTOCKS uses the ResNet18 convolutional neural network (CNN) to extract features from your uploaded charts. This powerful deep learning model has been trained to identify key visual patterns in stock price movements.</p>
+                    
+                    <div class="info-section-header">
+                        <span class="material-icons">history</span>
+                        <h3>Backtested Patterns</h3>
+                    </div>
+                    <p>Our system compares your chart against a database of extensively backtested stock patterns. These patterns have been rigorously analyzed for their predictive power across different market conditions and timeframes.</p>
+                    
+                    <div class="info-section-header">
+                        <span class="material-icons">auto_graph</span>
+                        <h3>Pattern Matching Process</h3>
+                    </div>
+                    <p>When you upload a chart, our AI extracts its key features and compares them to our pattern database using cosine similarity. This mathematical approach measures how closely your chart matches established patterns like Head and Shoulders, Cup and Handle, Double Bottom, and many more.</p>
+                    
+                    <div class="info-section-header">
+                        <span class="material-icons">trending_up</span>
+                        <h3>Confidence Ratings</h3>
+                    </div>
+                    <p>Each analysis includes a confidence rating that indicates how strongly your chart matches the identified pattern. Higher confidence scores suggest clearer pattern formations, which typically have stronger predictive value.</p>
+                </div>
+            </div>
+            
+            <div class="card-footer">
+                <a href="/" class="btn btn-primary">
+                    <span class="material-icons">arrow_back</span>
+                    Back to Analyzer
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">EZPZ<span>STOCKS</span></div>
+                    <p>AI-powered stock pattern recognition</p>
+                </div>
+                <div class="footer-links">
+                    <a href="/">Home</a>
+                    <a href="/how_we_work">How We Work</a>
+                    <a href="/trading_suggestions">Trading Suggestions</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 EZPZSTOCKS. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/static/scripts.js"></script>
 </body>
 </html>

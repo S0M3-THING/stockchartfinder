@@ -4,468 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EZPZSTOCKS - Stock Pattern Analyzer</title>
-    <!-- Material UI and Required Dependencies -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" />
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700&display=swap" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
+    <!-- Material UI and Dependencies -->
     <script src="https://unpkg.com/@mui/material@latest/umd/material-ui.development.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/react@latest/umd/react.development.js" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/react-dom@latest/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        :root {
-            --primary-color: #ffffff;
-            --background-color: #000000;
-            --card-color: #111111;
-            --text-color: #ffffff;
-            --accent-color: #1e88e5;
-            --success-color: #4caf50;
-            --warning-color: #ff9800;
-            --error-color: #f44336;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Roboto', sans-serif;
-            background-color: var(--background-color);
-            color: var(--text-color);
-        }
-
-        .welcome-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #000000;
-            z-index: 1000;
-        }
-
-        .background-video {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            opacity: 0.7;
-        }
-
-        .welcome-text {
-            position: relative;
-            text-align: center;
-            color: white;
-            z-index: 10;
-        }
-
-        .welcome-text h1 {
-            font-size: 3rem;
-            margin-bottom: 2rem;
-            text-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-
-        .hidden {
-            display: none !important;
-        }
-
-        .main-container {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .content-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
-        
-        @media (max-width: 900px) {
-            .content-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .input-panel, .output-panel {
-            background-color: var(--card-color);
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(255,255,255,0.05);
-            padding: 1.5rem;
-        }
-
-        .input-panel:hover, .output-panel:hover{
-            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .nav-button {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background-color 0.3s ease;
-        }
-
-        .nav-button:hover {
-            background-color: #1565c0;
-        }
-
-        .drop-area {
-            border: 2px dashed var(--primary-color);
-            border-radius: 8px;
-            padding: 2rem 1rem;
-            text-align: center;
-            cursor: pointer;
-            margin-bottom: 1rem;
-            position: relative;
-            color: var(--text-color);
-        }
-
-        .drop-area.drag-over {
-            background-color: rgba(var(--primary-color-rgb), 0.1);
-            border-color: var(--accent-color);
-        }
-
-        .uploaded-image {
-            max-width: 100%;
-            max-height: 300px;
-            display: none;
-            margin: 1rem auto;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(255,255,255,0.1);
-        }
-
-        .file-input {
-            display: none;
-        }
-
-        .file-label {
-            color: var(--accent-color);
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        .analyze-btn {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 0.75rem 1.5rem;
-            font-size: 1rem;
-            cursor: pointer;
-            display: block;
-            width: 100%;
-            margin-top: 1rem;
-            transition: background-color 0.3s ease;
-        }
-
-        .analyze-btn:hover {
-            background-color: #1565c0;
-        }
-
-        .progress-container {
-            margin: 1rem 0;
-            background-color: #e0e0e0;
-            border-radius: 4px;
-            overflow: hidden;
-            height: 8px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background-color: var(--accent-color);
-            width: 0;
-            transition: width 0.3s ease;
-        }
-
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.5rem;
-            border-radius: 4px;
-            background-color: #1a1a1a;
-            margin-bottom: 0.5rem;
-            align-items: center;
-        }
-
-        .buy-text {
-            color: var(--success-color);
-            font-weight: bold;
-        }
-
-        .sell-text {
-            color: var(--error-color);
-            font-weight: bold;
-        }
-
-        .disclaimer {
-            font-size: 0.75rem;
-            color: #999999;
-            margin-top: 1rem;
-            padding: 0.5rem;
-            border-radius: 4px;
-            background-color: #1a1a1a;
-        }
-
-        .user-input-box {
-            margin-bottom: 1.5rem;
-        }
-
-        .user-input-field {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
-
-        .user-input-field:focus {
-            border-color: var(--accent-color);
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(var(--accent-color-rgb), 0.2);
-        }
-
-        .user-input-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-    </style>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
+    <!-- Welcome Screen -->
     <div id="welcome-screen" class="welcome-screen">
         <video autoplay muted loop class="background-video">
             <source src="/static/background.mp4" type="video/mp4">
         </video>
-        <div class="welcome-text">
-            <h1>Welcome to EZPZSTOCKS</h1>
-            <button id="enter-site" class="analyze-btn">Click Here to Get Rich</button>
+        <div class="welcome-content">
+            <div class="logo-container">
+                <div class="logo">EZPZ<span>STOCKS</span></div>
+            </div>
+            <h1 class="welcome-title">Stock Pattern Analysis Made Simple</h1>
+            <p class="welcome-subtitle">Leverage AI to identify profitable trading patterns</p>
+            <button id="enter-site" class="btn btn-primary btn-lg pulse-animation">
+                Get Started <span class="material-icons">arrow_forward</span>
+            </button>
         </div>
     </div>
 
-    <div id="main-content" class="hidden main-container">
-        <div class="header">
-            <h1>Stock Pattern Analyzer</h1>
-        </div>
-
-        <div class="content-grid">
-
-            <div class="nav-buttons">
-                <button class="nav-button" id="how-we-work-btn">
-                  How We Work
-                </button>
-                
-                <button class="nav-button" id="trading-suggestions-btn">
-                  Trading Suggestions
-                </button>
+    <!-- Main Content -->
+    <div id="main-content" class="hidden">
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">EZPZ<span>STOCKS</span></div>
+                <div class="nav-links">
+                    <a href="/" class="active">Dashboard</a>
+                    <a href="/how_we_work" id="how-we-work-link">How We Work</a>
+                    <a href="/trading_suggestions" id="trading-suggestions-link">Trading Suggestions</a>
+                </div>
             </div>
-                     
+        </nav>
 
-            <!-- Center Panel - Image Upload & Analysis -->
-            <div class="input-panel">
-                <h2>Upload Stock Chart</h2>
-                <p>Upload an image of a stock trend, and our AI will analyze its pattern!</p>
+        <div class="container">
+            <div class="page-header">
+                <h1>Stock Pattern Analyzer</h1>
+                <p>Upload a chart and get AI-powered trading recommendations in seconds</p>
+            </div>
 
-                <div id="drop-area" class="drop-area">
-                    <p id="drop-text">Drag & Drop a stock chart image</p>
-                    <p>or</p>
-                    <button id="fileSelectBtn" class="analyze-btn" style="background-color: var(--secondary-color); margin: 1rem auto; width: auto; padding: 0.5rem 1rem;">
-                        <span class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">upload_file</span>
-                        Choose File
+            <div class="analyzer-card">
+                <div class="card-header">
+                    <h2>Upload Stock Chart</h2>
+                    <p>Our AI algorithm will analyze your chart and identify the most likely pattern</p>
+                </div>
+                
+                <div class="card-body">
+                    <div id="drop-area" class="drop-area">
+                        <div class="upload-icon">
+                            <span class="material-icons">cloud_upload</span>
+                        </div>
+                        <p id="drop-text">Drag & drop your chart image here</p>
+                        <p class="upload-subtitle">or</p>
+                        <button id="fileSelectBtn" class="btn btn-outline">
+                            Choose File
+                        </button>
+                        <input type="file" id="imageInput" class="file-input" accept="image/*" title="Upload an image to analyze" />
+                        <img id="uploadedImage" class="uploaded-image" alt="Uploaded stock chart" />
+                    </div>
+
+                    <button onclick="analyzeImage()" class="btn btn-primary btn-analyze">
+                        <span class="material-icons">analytics</span>
+                        Analyze Pattern
                     </button>
-                    <input type="file" id="imageInput" class="file-input" accept="image/*" title="Upload an image to analyze" />
-                    <img id="uploadedImage" class="uploaded-image" alt="Uploaded stock trend image" />
-                </div>
 
-                <button onclick="analyzeImage()" class="analyze-btn">
-                    <span class="material-icons" style="vertical-align: middle; margin-right: 0.5rem;">analytics</span>
-                    Analyze Pattern
-                </button>
+                    <div id="progress-container" class="progress-container hidden">
+                        <div class="progress-label">Processing...</div>
+                        <div class="progress-bar-container">
+                            <div id="progress-bar" class="progress-bar"></div>
+                        </div>
+                    </div>
 
-                <div id="progress-container" class="progress-container hidden">
-                    <div id="progress-bar" class="progress-bar"></div>
-                </div>
-
-                <div id="result-container" class="hidden">
-                    <h3>Analysis Results</h3>
-                    <div class="result-row" style="background-color: rgba(var(--primary-color-rgb), 0.1);">
-                        <span><strong>Decision:</strong></span>
-                        <span id="finalDecision" class="final-decision">-</span>
-                        <span><strong>Confidence:</strong></span>
-                        <span id="confidence">-</span>
-                        <span><strong>Pattern:</strong></span>
-                        <span id="closestImageName">-</span>
+                    <div id="result-container" class="hidden">
+                        <h3>Analysis Results</h3>
+                        <div class="result-grid">
+                            <div class="result-item">
+                                <div class="result-label">Decision</div>
+                                <div id="finalDecision" class="result-value">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Confidence</div>
+                                <div id="confidence" class="result-value">-</div>
+                            </div>
+                            <div class="result-item">
+                                <div class="result-label">Pattern</div>
+                                <div id="closestImageName" class="result-value">-</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="disclaimer">
-                    <strong>Disclaimer:</strong> This analysis is for informational purposes only and should not be considered as financial advice.
+                <div class="card-footer">
+                    <div class="disclaimer">
+                        <span class="material-icons">info</span>
+                        <p>This analysis is for informational purposes only and should not be considered as financial advice. Always do your own research before making investment decisions.</p>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-brand">
+                        <div class="logo">EZPZ<span>STOCKS</span></div>
+                        <p>AI-powered stock pattern recognition</p>
+                    </div>
+                    <div class="footer-links">
+                        <a href="/">Home</a>
+                        <a href="/how_we_work">How We Work</a>
+                        <a href="/trading_suggestions">Trading Suggestions</a>
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p>&copy; 2025 EZPZSTOCKS. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const dropArea = document.getElementById("drop-area");
-            const input = document.getElementById("imageInput");
-            const fileSelectBtn = document.getElementById("fileSelectBtn");
-
-            // Connect file button to hidden input
-            fileSelectBtn.addEventListener("click", () => {
-                input.click();
-            });
-
-            // Drag and drop events
-            dropArea.addEventListener("dragover", (event) => {
-                event.preventDefault();
-                dropArea.classList.add("drag-over");
-            });
-
-            dropArea.addEventListener("dragleave", () => {
-                dropArea.classList.remove("drag-over");
-            });
-
-            dropArea.addEventListener("drop", (event) => {
-                event.preventDefault();
-                dropArea.classList.remove("drag-over");
-
-                if (event.dataTransfer.files.length > 0) {
-                    input.files = event.dataTransfer.files;
-                    handleImagePreview({ target: input }); 
-                }
-            });
-
-            input.addEventListener("change", handleImagePreview);
-
-            // Welcome screen
-            document.getElementById("enter-site").addEventListener("click", function() {
-                document.getElementById("welcome-screen").style.display = "none";
-                document.getElementById("main-content").classList.remove("hidden");
-            });
-
-
-
-            // Button navigation for "How We Work" and "Trading Suggestions"
-            document.getElementById("how-we-work-btn").addEventListener("click", function () {
-                window.location.href = "/how_we_work";
-            });
-
-            document.getElementById("trading-suggestions-btn").addEventListener("click", function () {
-                window.location.href = "/trading_suggestions";
-            });
-
-        });
-
-        function handleImagePreview(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onload = function(e) {
-                    const previewImage = document.getElementById("uploadedImage");
-                    previewImage.src = e.target.result;
-                    previewImage.style.display = "block";
-                    
-                    // Update drop text
-                    document.getElementById("drop-text").textContent = "Image ready for analysis";
-                }
-
-                reader.readAsDataURL(file);
-            }
-        }
-
-
-        function updateProgress(progress) {
-            const progressBar = document.getElementById("progress-bar");
-            progressBar.style.width = progress + "%";
-        }
-
-        function analyzeImage() {
-            const input = document.getElementById("imageInput").files[0];
-            if (!input) {
-                Swal.fire({ 
-                    icon: 'error', 
-                    title: 'No Image Selected', 
-                    text: 'Please select a stock chart image to analyze!',
-                    confirmButtonColor: getComputedStyle(document.body).getPropertyValue('--primary-color')
-                });
-                return;
-            }
-
-            document.getElementById("progress-container").classList.remove("hidden");
-            document.getElementById("result-container").classList.add("hidden");
-            updateProgress(0);
-
-            let progress = 0;
-            let interval = setInterval(() => {
-                progress += 20;
-                if (progress >= 100) {
-                    clearInterval(interval);
-                    showResults();
-                }
-                updateProgress(progress);
-            }, 300);
-
-            const formData = new FormData();
-            formData.append("image", input);
-            
-
-
-            fetch("/analyze", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                let finalText = "";
-                if (data.resnet_decision === "buy") {
-                    finalText = "LONG (BUY)";
-                    document.getElementById("finalDecision").className = "buy-text";
-                } else if (data.resnet_decision === "sell") {
-                    finalText = "SHORT (SELL)";
-                    document.getElementById("finalDecision").className = "sell-text";
-                }
-
-                document.getElementById("finalDecision").innerText = finalText;
-                document.getElementById("confidence").innerText = `${Math.round(data.resnet_confidence)}%`; 
-                document.getElementById("closestImageName").innerText = `${data.resnet_imagename}`;
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                Swal.fire({ 
-                    icon: 'error', 
-                    title: 'Analysis Failed', 
-                    text: 'An error occurred while processing the image.',
-                    confirmButtonColor: getComputedStyle(document.body).getPropertyValue('--primary-color')
-                });
-            });
-        }
-        
-        function showResults() {
-            document.getElementById("result-container").classList.remove("hidden");
-        }
-    </script>
+    <script src="/static/scripts.js"></script>
 </body>
 </html>

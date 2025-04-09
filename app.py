@@ -53,6 +53,10 @@ image_name_map = {
 database_features_resnet = np.array([extract_features_resnet(resnet_model, img) for img in database_paths])
 
 def delete_old_images():
+    # Create uploads directory if it doesn't exist
+    if not os.path.exists("uploads"):
+        os.makedirs("uploads")
+        
     for file in os.listdir("uploads"):
         file_path = os.path.join("uploads", file)
         if os.path.isfile(file_path):
@@ -118,12 +122,12 @@ def analyze():
         return jsonify({"error": "An error occurred", "details": str(e)}), 500
 
 if __name__ == "__main__":
-    #app.run(debug=False, host="127.0.0.1", port=5001) 
+    # Make sure uploads directory exists
+    if not os.path.exists("uploads"):
+        os.makedirs("uploads")
+        
+    # Create a static directory if it doesn't exist
+    if not os.path.exists("static"):
+        os.makedirs("static")
+        
     app.run(debug=False, host="0.0.0.0", port=5001)
-
-
-'''
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5001))
-    app.run(debug=False, host="0.0.0.0", port=port)
-'''
