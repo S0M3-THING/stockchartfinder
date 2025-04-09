@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, render_template
 import os
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
@@ -9,7 +9,15 @@ from flask_limiter.util import get_remote_address
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
-limiter = Limiter(get_remote_address, app=app, default_limits=["10 per minute"])
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
+
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'heic'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+limiter = Limiter(get_remote_address, app=app)
 
 
 resnet_model = load_resnet()
@@ -50,6 +58,15 @@ def delete_old_images():
         if os.path.isfile(file_path):
             os.remove(file_path)
 
+@app.route('/how_we_work')
+def how_we_work():
+    return render_template('how_we_work.html')
+
+@app.route('/trading_suggestions')
+def trading_suggestions():
+    return render_template('trading_suggestions.html')
+
+
 @app.route("/")
 def index():
     return send_from_directory("templates", "frontend.html")
@@ -59,7 +76,7 @@ def serve_static(path):
     return send_from_directory("static", path)
 
 @app.route("/analyze", methods=["POST"])
-@limiter.limit("10 per minute") 
+@limiter.limit("5 per day")
 def analyze():
     try:
         delete_old_images()
@@ -68,6 +85,8 @@ def analyze():
             return jsonify({"error": "No image uploaded"}), 400
 
         image = request.files["image"]
+        if not allowed_file(image.filename):
+            return jsonify({"error": "File type not allowed. Only jpg, jpeg, png, heic accepted."}), 400
         image_path = f"uploads/{uuid.uuid4().hex}.jpg"
         image.save(image_path)
 

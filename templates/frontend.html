@@ -14,12 +14,11 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root {
-            --primary-color: #3f51b5;
-            --secondary-color: #f50057;
-            --background-color: #f5f5f5;
-            --card-color: #ffffff;
-            --text-color: #333333;
-            --accent-color: #2196f3;
+            --primary-color: #ffffff;
+            --background-color: #000000;
+            --card-color: #111111;
+            --text-color: #ffffff;
+            --accent-color: #1e88e5;
             --success-color: #4caf50;
             --warning-color: #ff9800;
             --error-color: #f44336;
@@ -31,53 +30,6 @@
             font-family: 'Roboto', sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
-            transition: background-color 0.3s ease;
-        }
-
-        /* Theme Styles */
-        body.ocean {
-            --primary-color: #1976d2;
-            --secondary-color: #03a9f4;
-            --background-color: #e3f2fd;
-            --card-color: #ffffff;
-            --text-color: #0d47a1;
-            --accent-color: #00bcd4;
-        }
-
-        body.pro-trader {
-            --primary-color: #212121;
-            --secondary-color: #ff9800;
-            --background-color: #263238;
-            --card-color: #37474f;
-            --text-color: #eceff1;
-            --accent-color: #ffc107;
-        }
-
-        body.sand {
-            --primary-color: #ffb300;
-            --secondary-color: #ff8f00;
-            --background-color: #fff8e1;
-            --card-color: #ffffff;
-            --text-color: #bf360c;
-            --accent-color: #ffd54f;
-        }
-
-        body.forest {
-            --primary-color: #388e3c;
-            --secondary-color: #66bb6a;
-            --background-color: #e8f5e9;
-            --card-color: #ffffff;
-            --text-color: #1b5e20;
-            --accent-color: #81c784;
-        }
-
-        body.stone {
-            --primary-color: #616161;
-            --secondary-color: #9e9e9e;
-            --background-color: #eeeeee;
-            --card-color: #f5f5f5;
-            --text-color: #212121;
-            --accent-color: #bdbdbd;
         }
 
         .welcome-screen {
@@ -121,7 +73,7 @@
         }
 
         .main-container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
@@ -135,7 +87,7 @@
 
         .content-grid {
             display: grid;
-            grid-template-columns: 1fr 2fr 1fr;
+            grid-template-columns: 1fr;
             gap: 1.5rem;
         }
         
@@ -145,16 +97,37 @@
             }
         }
 
-        .input-panel, .output-panel, .suggestion-panel {
+        .input-panel, .output-panel {
             background-color: var(--card-color);
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(255,255,255,0.05);
             padding: 1.5rem;
-            transition: all 0.3s ease;
         }
 
-        .input-panel:hover, .output-panel:hover, .suggestion-panel:hover {
+        .input-panel:hover, .output-panel:hover{
             box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .nav-button {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .nav-button:hover {
+            background-color: #1565c0;
         }
 
         .drop-area {
@@ -163,9 +136,9 @@
             padding: 2rem 1rem;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
             margin-bottom: 1rem;
             position: relative;
+            color: var(--text-color);
         }
 
         .drop-area.drag-over {
@@ -179,7 +152,7 @@
             display: none;
             margin: 1rem auto;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            box-shadow: 0 2px 8px rgba(255,255,255,0.1);
         }
 
         .file-input {
@@ -193,22 +166,21 @@
         }
 
         .analyze-btn {
-            background-color: var(--primary-color);
+            background-color: var(--accent-color);
             color: white;
             border: none;
             border-radius: 4px;
             padding: 0.75rem 1.5rem;
             font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
             display: block;
             width: 100%;
             margin-top: 1rem;
+            transition: background-color 0.3s ease;
         }
 
         .analyze-btn:hover {
-            background-color: var(--secondary-color);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            background-color: #1565c0;
         }
 
         .progress-container {
@@ -229,11 +201,11 @@
         .result-row {
             display: flex;
             justify-content: space-between;
-            align-items: center;
             padding: 0.5rem;
             border-radius: 4px;
-            background-color: rgba(var(--accent-color-rgb), 0.1);
+            background-color: #1a1a1a;
             margin-bottom: 0.5rem;
+            align-items: center;
         }
 
         .buy-text {
@@ -248,22 +220,11 @@
 
         .disclaimer {
             font-size: 0.75rem;
-            color: #757575;
+            color: #999999;
             margin-top: 1rem;
             padding: 0.5rem;
             border-radius: 4px;
-            background-color: rgba(0,0,0,0.05);
-        }
-
-        .suggested-item {
-            padding: 0.5rem;
-            margin-bottom: 0.5rem;
-            border-left: 3px solid var(--accent-color);
-            background-color: rgba(var(--accent-color-rgb), 0.05);
-        }
-
-        .theme-selector {
-            margin-bottom: 1rem;
+            background-color: #1a1a1a;
         }
 
         .user-input-box {
@@ -290,37 +251,6 @@
             margin-bottom: 0.5rem;
             font-weight: 500;
         }
-
-        /* Convert RGB colors to variables for opacity */
-        :root {
-            --primary-color-rgb: 63, 81, 181;
-            --accent-color-rgb: 33, 150, 243;
-        }
-
-        body.ocean {
-            --primary-color-rgb: 25, 118, 210;
-            --accent-color-rgb: 0, 188, 212;
-        }
-
-        body.pro-trader {
-            --primary-color-rgb: 33, 33, 33;
-            --accent-color-rgb: 255, 193, 7;
-        }
-
-        body.sand {
-            --primary-color-rgb: 255, 179, 0;
-            --accent-color-rgb: 255, 213, 79;
-        }
-
-        body.forest {
-            --primary-color-rgb: 56, 142, 60;
-            --accent-color-rgb: 129, 199, 132;
-        }
-
-        body.stone {
-            --primary-color-rgb: 97, 97, 97;
-            --accent-color-rgb: 189, 189, 189;
-        }
     </style>
 </head>
 <body>
@@ -337,26 +267,20 @@
     <div id="main-content" class="hidden main-container">
         <div class="header">
             <h1>Stock Pattern Analyzer</h1>
-            
-            <div class="theme-selector">
-                <label for="themeSelect">🎨 Theme:</label>
-                <select id="themeSelect" onchange="changeTheme(this.value)" class="user-input-field" style="width: auto; padding: 0.5rem;">
-                    <option value="ocean" selected>🌊 Ocean</option>
-                    <option value="pro-trader">⚡ Pro Trader</option>
-                    <option value="sand">🏖️ Sand</option>
-                    <option value="forest">🌲 Forest</option>
-                    <option value="stone">🪨 Stone</option>
-                </select>
-            </div>
         </div>
 
         <div class="content-grid">
-            <!-- Left Panel - User Input Section -->
-            <div class="input-panel">
-                <h2>How We Work</h2>
-                <p class="user-text">By matching your stock charts to a data base of backtested stock patterns using the resnet18 CNN's feature extraction, we give you an action recommendation with confidence ratings so that you can get the best shot at beating the market</p>
-            </div>            
-            
+
+            <div class="nav-buttons">
+                <button class="nav-button" id="how-we-work-btn">
+                  How We Work
+                </button>
+                
+                <button class="nav-button" id="trading-suggestions-btn">
+                  Trading Suggestions
+                </button>
+            </div>
+                     
 
             <!-- Center Panel - Image Upload & Analysis -->
             <div class="input-panel">
@@ -397,26 +321,6 @@
                 
                 <div class="disclaimer">
                     <strong>Disclaimer:</strong> This analysis is for informational purposes only and should not be considered as financial advice.
-                </div>
-            </div>
-
-            <!-- Right Panel - Suggestions -->
-            <div class="suggestion-panel">
-                <h2>Trading Suggestions</h2>
-                
-                <div class="suggested-item">
-                    <strong>Suggested Time Frame:</strong> 2 hours
-                </div>
-                
-                <div class="suggested-item">
-                    <strong>Suggested Risk/Reward Ratio:</strong> 1:2
-                </div>
-                
-                <div class="suggested-item">
-                    <strong>Best Practices:</strong>
-                    <ul>
-                        <li>Always use stop losses</li>
-                    </ul>
                 </div>
             </div>
         </div>
@@ -461,10 +365,17 @@
                 document.getElementById("main-content").classList.remove("hidden");
             });
 
-            // Set theme from localStorage or default
-            const savedTheme = localStorage.getItem("selectedTheme") || "ocean";
-            changeTheme(savedTheme);
-            document.getElementById("themeSelect").value = savedTheme;
+
+
+            // Button navigation for "How We Work" and "Trading Suggestions"
+            document.getElementById("how-we-work-btn").addEventListener("click", function () {
+                window.location.href = "/how_we_work";
+            });
+
+            document.getElementById("trading-suggestions-btn").addEventListener("click", function () {
+                window.location.href = "/trading_suggestions";
+            });
+
         });
 
         function handleImagePreview(event) {
@@ -485,10 +396,6 @@
             }
         }
 
-        function changeTheme(theme) {
-            document.body.className = theme;
-            localStorage.setItem("selectedTheme", theme);
-        }
 
         function updateProgress(progress) {
             const progressBar = document.getElementById("progress-bar");
