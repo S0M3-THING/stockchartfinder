@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory, render_template
+from flask import Flask, request, jsonify, send_from_directory, render_template, make_response
 import os
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
@@ -6,6 +6,9 @@ from cheatsheet import load_resnet, extract_features_resnet, buy_sell_mapping
 import uuid
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+import hashlib
+from PIL import Image
+import numpy as np
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
@@ -17,7 +20,28 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-limiter = Limiter(get_remote_address, app=app)
+
+def get_user_identifier():
+    user_id = request.cookies.get('user_id')
+
+    if not user_id:
+        # Extract as many unique and stable headers as possible
+        user_agent = request.headers.get('User-Agent', '')
+        accept_lang = request.headers.get('Accept-Language', '')
+        sec_ch_ua = request.headers.get('Sec-CH-UA', '')
+        sec_ch_platform = request.headers.get('Sec-CH-UA-Platform', '')
+        sec_ch_mobile = request.headers.get('Sec-CH-UA-Mobile', '')
+        ip = get_remote_address()
+        
+        # Create combined fingerprint
+        fingerprint = f"{user_agent}|{accept_lang}|{sec_ch_ua}|{sec_ch_platform}|{sec_ch_mobile}|{ip}"
+        user_id = hashlib.sha256(fingerprint.encode()).hexdigest()
+
+    return user_id
+
+
+#limiter = Limiter(get_remote_address, app=app)
+limiter = Limiter(get_user_identifier, app=app)
 
 
 resnet_model = load_resnet()
@@ -83,10 +107,10 @@ def serve_static(path):
 @limiter.limit("5 per day")
 def analyze():
     try:
-        delete_old_images()
 
         if "image" not in request.files:
             return jsonify({"error": "No image uploaded"}), 400
+
 
         image = request.files["image"]
         if not allowed_file(image.filename):
@@ -110,16 +134,26 @@ def analyze():
 
         resnet_decision = buy_sell_mapping[resnet_match]
 
-        return jsonify({
+        delete_old_images()
+
+        result = {
             "resnet_match": resnet_match,
             "resnet_confidence": confidence_resnet,
             "resnet_decision": resnet_decision,
             "resnet_imagename": closest_image_name
-        })
+        }
+
+        response = make_response(jsonify(result))
+        if not request.cookies.get('user_id'):
+            user_id = get_user_identifier()
+            response.set_cookie('user_id', user_id, max_age=60*60*24*365)  # 1 year
+        return response
+
     
     except Exception as e:
         print("Error:", str(e))
         return jsonify({"error": "An error occurred", "details": str(e)}), 500
+
 
 if __name__ == "__main__":
     # Make sure uploads directory exists

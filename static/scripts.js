@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
+
     // Elements
     const dropArea = document.getElementById("drop-area");
     const input = document.getElementById("imageInput");
@@ -9,6 +10,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const mainContent = document.getElementById("main-content");
     const howWeWorkBtn = document.getElementById("how-we-work-link");
     const tradingSuggestionsBtn = document.getElementById("trading-suggestions-link");
+
+
 
     // Initialize any tooltips or advanced UI components
     initializeUI();
@@ -202,4 +205,18 @@ function navigateTo(url) {
     setTimeout(() => {
         window.location.href = url;
     }, 300);
+}
+
+
+function resetAnalyzer() {
+    // Reset the form and UI
+    document.getElementById("imageInput").value = "";
+    document.getElementById("uploadedImage").src = "";
+    document.getElementById("uploadedImage").style.display = "none";
+    document.getElementById("drop-text").textContent = "Drag & drop your chart image here";
+    document.getElementById("drop-area").classList.remove("file-selected");
+    
+    // Hide results
+    document.getElementById("result-container").classList.add("hidden");
+    document.getElementById("progress-container").classList.add("hidden");
 }
