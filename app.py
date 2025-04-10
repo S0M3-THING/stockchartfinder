@@ -9,8 +9,12 @@ from flask_limiter.util import get_remote_address
 import hashlib
 from PIL import Image
 import numpy as np
+import secrets
+
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
+
+app.secret_key = os.environ.get("SECRET_KEY", secrets.token_hex(32))
 
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
 

@@ -29,6 +29,5 @@ def extract_features_resnet(model, image_path):
         features = model(image)
     
     feature_vector = features.numpy().flatten()
-    print("Extracted Feature Shape:", feature_vector.shape) 
     return feature_vector
 
