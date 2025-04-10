@@ -116,6 +116,20 @@ function analyzeImage() {
         return;
     }
 
+    // Check file size before uploading (max 5MB as per your server config)
+    if (input.size > 5 * 1024 * 1024) {
+        showNotification('error', 'File Too Large', 'Please select an image under 5MB in size.');
+        return;
+    }
+
+    // Check file type
+    const fileType = input.type.split('/')[1];
+    const allowedTypes = ['jpg', 'jpeg', 'png', 'heic'];
+    if (!allowedTypes.includes(fileType.toLowerCase())) {
+        showNotification('error', 'Invalid File Type', 'Please upload only JPG, JPEG, PNG, or HEIC images.');
+        return;
+    }
+
     // Show progress and hide any previous results
     const progressContainer = document.getElementById("progress-container");
     const resultContainer = document.getElementById("result-container");
@@ -145,7 +159,9 @@ function analyzeImage() {
     })
     .then(response => {
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            return response.json().then(errorData => {
+                throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);
+            });
         }
         return response.json();
     })
@@ -182,9 +198,28 @@ function analyzeImage() {
     })
     .catch(error => {
         console.error("Error:", error);
+        clearInterval(interval);
         updateProgress(0);
         progressContainer.classList.add("hidden");
-        showNotification('error', 'Analysis Failed', 'An error occurred while processing the image.');
+        
+        // Handle specific error messages
+        const errorMsg = error.message.toLowerCase();
+        
+        if (errorMsg.includes("no image uploaded")) {
+            showNotification('error', 'No Image Selected', 'Please select a stock chart image to analyze!');
+        } 
+        else if (errorMsg.includes("file type not allowed")) {
+            showNotification('error', 'Invalid File Type', 'Please upload only JPG, JPEG, PNG, or HEIC images.');
+        }
+        else if (errorMsg.includes("5 per day")) {
+            showNotification('error', 'Daily Limit Reached', 'You have reached your limit of 5 analyses per day. Please try again tomorrow.');
+        }
+        else if (errorMsg.includes("max_content_length")) {
+            showNotification('error', 'File Too Large', 'Please select an image under 5MB in size.');
+        }
+        else {
+            showNotification('error', 'Analysis Failed', 'An error occurred while processing the image. Please try again later.');
+        }
     });
 }
 
