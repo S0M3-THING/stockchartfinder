@@ -158,6 +158,7 @@ function analyzeImage() {
     // Prepare form data for API request
     const formData = new FormData();
     formData.append("image", input);
+    console.log("Captcha response value:", captchaResponse);
     formData.append("g-recaptcha-response", captchaResponse);
     
     // Make API request
