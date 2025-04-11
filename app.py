@@ -122,7 +122,7 @@ def analyze():
         if "image" not in request.files:
             return jsonify({"error": "No image uploaded"}), 400
         
-        recaptcha_response = request.form.get('captcha_token')
+        recaptcha_response = request.form.get("g-recaptcha-response")
         if not recaptcha_response:
             return jsonify({"error": "No captcha response provided"}), 400
             
