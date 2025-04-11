@@ -117,6 +117,7 @@ function analyzeImage() {
     }
 
     const captchaResponse = grecaptcha.getResponse(recaptchaWidgetId);
+    console.log("Captcha response:", captchaResponse); 
 
     if (!captchaResponse) {
         showNotification('error', 'Captcha Required', 'Please complete the captcha verification before analysis.');
@@ -159,6 +160,8 @@ function analyzeImage() {
     const formData = new FormData();
     formData.append("image", input);
     console.log("Captcha response value:", captchaResponse);
+    console.log("Captcha response:", grecaptcha.getResponse(recaptchaWidgetId));
+
     formData.append("g-recaptcha-response", captchaResponse);
     
     // Make API request
