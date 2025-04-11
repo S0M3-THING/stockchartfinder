@@ -1079,3 +1079,22 @@ p {
         padding: var(--space-lg);
     }
 }
+
+.recaptcha-container {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.g-recaptcha {
+    margin-bottom: 10px;
+}
+
+.btn-analyze {
+    margin-top: 15px;
+    min-width: 180px;
+}

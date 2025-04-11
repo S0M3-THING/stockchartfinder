@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
     <!-- Material UI and Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Google reCAPTCHA -->
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="/static/styles.css">
 </head>
@@ -69,8 +71,13 @@
                         <img id="uploadedImage" class="uploaded-image" alt="Uploaded stock chart" />
                     </div>
 
-                    <div style="display: flex; flex-direction: column; align-items: center; gap: var(--space-md);">
-                        <div class="g-recaptcha" data-sitekey="6Ld-ihMrAAAAAOjNExNjF8uJYlPqLvcLDkvlhMIE"></div>
+                    <div class="recaptcha-container" style="display: flex; flex-direction: column; align-items: center; gap: var(--space-md); margin-top: 20px;">
+                        <div class="g-recaptcha" data-sitekey="6LcFshMrAAAAAPg86VILQLgVg-h80RD8mdE_t78P"></div>
+                        
+                        <button onclick="analyzeImage()" class="btn btn-primary btn-analyze" style="margin-top: 15px;">
+                            <span class="material-icons">search</span>
+                            Analyze Chart
+                        </button>
                     </div>
 
                     <div id="progress-container" class="progress-container hidden">

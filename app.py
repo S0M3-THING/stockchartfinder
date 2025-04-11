@@ -11,6 +11,7 @@ from PIL import Image
 import numpy as np
 import secrets
 from dotenv import load_dotenv
+import requests
 
 
 
@@ -20,6 +21,9 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 
 app.secret_key = os.environ.get("SECRET_KEY", secrets.token_hex(32))
 
+# reCAPTCHA settings
+RECAPTCHA_SECRET_KEY = os.environ.get("RECAPTCHA_SECRET_KEY")
+RECAPTCHA_VERIFY_URL = "https://www.google.com/recaptcha/api/siteverify"
 
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
 
@@ -28,7 +32,19 @@ ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png', 'heic'}
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
+def verify_recaptcha(recaptcha_response):
+    if not recaptcha_response:
+        return False
+    
+    data = {
+        'secret': RECAPTCHA_SECRET_KEY,
+        'response': recaptcha_response
+    }
+    
+    response = requests.post(RECAPTCHA_VERIFY_URL, data=data)
+    result = response.json()
+    
+    return result.get('success', False)
 
 def get_user_identifier():
     user_id = request.cookies.get('user_id')
@@ -48,10 +64,7 @@ def get_user_identifier():
 
     return user_id
 
-
-#limiter = Limiter(get_remote_address, app=app)
 limiter = Limiter(get_user_identifier, app=app)
-
 
 resnet_model = load_resnet()
 
@@ -116,10 +129,13 @@ def serve_static(path):
 @limiter.limit("5 per day")
 def analyze():
     try:
+        # Verify reCAPTCHA
+        recaptcha_response = request.form.get('g-recaptcha-response')
+        if not verify_recaptcha(recaptcha_response):
+            return jsonify({"error": "reCAPTCHA verification failed"}), 400
 
         if "image" not in request.files:
             return jsonify({"error": "No image uploaded"}), 400
-
 
         image = request.files["image"]
         if not allowed_file(image.filename):
@@ -127,19 +143,16 @@ def analyze():
         image_path = f"uploads/{uuid.uuid4().hex}.jpg"
         image.save(image_path)
 
-
         input_features_resnet = extract_features_resnet(resnet_model, image_path)
 
         if input_features_resnet is None:
             return jsonify({"error": "Feature extraction failed"}), 500
-
 
         similarities_resnet = cosine_similarity([input_features_resnet], database_features_resnet)
         closest_resnet_idx = np.argmax(similarities_resnet)
         resnet_match = database_images[closest_resnet_idx]
         confidence_resnet = float(similarities_resnet[0, closest_resnet_idx] * 100)
         closest_image_name = image_name_map.get(resnet_match, "Unknown Image")
-
 
         resnet_decision = buy_sell_mapping[resnet_match]
 
@@ -175,6 +188,3 @@ if __name__ == "__main__":
 
     
     app.run(debug=False, host="127.0.0.1", port=5001)
-
-        
-    #app.run(debug=False, host="0.0.0.0", port=5001)
