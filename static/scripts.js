@@ -116,7 +116,8 @@ function analyzeImage() {
         return;
     }
 
-    const captchaResponse = grecaptcha.getResponse();
+    const captchaResponse = grecaptcha.getResponse(recaptchaWidgetId);
+
     if (!captchaResponse) {
         showNotification('error', 'Captcha Required', 'Please complete the captcha verification before analysis.');
         return;
