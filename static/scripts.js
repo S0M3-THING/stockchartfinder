@@ -116,6 +116,12 @@ function analyzeImage() {
         return;
     }
 
+    const captchaResponse = grecaptcha.getResponse();
+    if (!captchaResponse) {
+        showNotification('error', 'Captcha Required', 'Please complete the captcha verification before analysis.');
+        return;
+    }
+
     // Check file size before uploading (max 5MB as per your server config)
     if (input.size > 5 * 1024 * 1024) {
         showNotification('error', 'File Too Large', 'Please select an image under 5MB in size.');
@@ -151,6 +157,7 @@ function analyzeImage() {
     // Prepare form data for API request
     const formData = new FormData();
     formData.append("image", input);
+    formData.append("recaptcha_response", captchaResponse);
     
     // Make API request
     fetch("/analyze", {
@@ -158,6 +165,7 @@ function analyzeImage() {
         body: formData
     })
     .then(response => {
+        grecaptcha.reset();
         if (!response.ok) {
             return response.json().then(errorData => {
                 throw new Error(errorData.error || `HTTP error! Status: ${response.status}`);

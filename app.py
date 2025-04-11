@@ -10,11 +10,18 @@ import hashlib
 from PIL import Image
 import numpy as np
 import secrets
+import requests
+from dotenv import load_dotenv
 
+
+
+load_dotenv()
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
 app.secret_key = os.environ.get("SECRET_KEY", secrets.token_hex(32))
+app.recaptcha_secret_key = os.environ.get("RECAPTCHA_SECRET_KEY")
+
 
 app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
 
@@ -114,6 +121,23 @@ def analyze():
 
         if "image" not in request.files:
             return jsonify({"error": "No image uploaded"}), 400
+        
+        recaptcha_response = request.form.get('recaptcha_response')
+        if not recaptcha_response:
+            return jsonify({"error": "No captcha response provided"}), 400
+            
+        # Verify with Google
+        secret_key = app.recaptcha_secret_key  # Get this from your reCAPTCHA admin console
+        verification_response = requests.post(
+            'https://www.google.com/recaptcha/api/siteverify',
+            data={
+                'secret': secret_key,
+                'response': recaptcha_response
+            }
+        ).json()
+
+        if not verification_response.get('success', False):
+            return jsonify({"error": "captcha verification failed"}), 400
 
 
         image = request.files["image"]
