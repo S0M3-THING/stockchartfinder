@@ -4,7 +4,6 @@ flask_limiter==3.11
 gunicorn==23.0.0
 numpy==2.0.2
 Pillow==11.1.0
-requests==2.32.3
 scikit_learn==1.6.1
 torch==2.6.0
 torchvision==0.21.0
