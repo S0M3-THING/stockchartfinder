@@ -11,8 +11,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const howWeWorkBtn = document.getElementById("how-we-work-link");
     const tradingSuggestionsBtn = document.getElementById("trading-suggestions-link");
 
-
-
     // Initialize any tooltips or advanced UI components
     initializeUI();
 
@@ -117,7 +115,7 @@ function analyzeImage() {
         return;
     }
 
-    // Verify reCAPTCHA
+    // Verify reCAPTCHA - fixed to use the correct method
     const recaptchaResponse = grecaptcha.getResponse();
     if (!recaptchaResponse) {
         showNotification('error', 'reCAPTCHA Required', 'Please complete the reCAPTCHA verification before proceeding.');
