@@ -217,6 +217,7 @@ function analyzeImage() {
         
         // Handle specific error messages
         const errorMsg = error.message.toLowerCase();
+        grecaptcha.reset();
         
         if (errorMsg.includes("no image")) {
             showNotification('error', 'No Image Selected', 'Please select a stock chart image to analyze!');
@@ -237,7 +238,7 @@ function analyzeImage() {
             showNotification('error', 'Analysis Failed', 'An error occurred while processing the image. Please try again later.');
             //showNotification('error', 'Error', 'Something went wrong while analyzing the image.');
         }
-        grecaptcha.reset();
+        
     });
 }
 
