@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", function() {
     const howWeWorkBtn = document.getElementById("how-we-work-link");
     const tradingSuggestionsBtn = document.getElementById("trading-suggestions-link");
 
+
+
     // Initialize any tooltips or advanced UI components
     initializeUI();
 
@@ -115,7 +117,7 @@ function analyzeImage() {
         return;
     }
 
-    // Verify reCAPTCHA - fixed to use the correct method
+    // Get reCAPTCHA response without referencing recaptchaWidgetId
     const recaptchaResponse = grecaptcha.getResponse();
     if (!recaptchaResponse) {
         showNotification('error', 'reCAPTCHA Required', 'Please complete the reCAPTCHA verification before proceeding.');
@@ -211,6 +213,7 @@ function analyzeImage() {
         clearInterval(interval);
         updateProgress(0);
         progressContainer.classList.add("hidden");
+        showNotification('error', 'Error', 'Something went wrong while analyzing the image.');
         
         // Reset reCAPTCHA after error
         grecaptcha.reset();
