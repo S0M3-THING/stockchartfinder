@@ -806,6 +806,9 @@ p {
     margin-bottom: var(--space-xl);
     transition: all var(--transition-normal);
     background-color: var(--dark-surface-light);
+    position: relative; /* Added for absolute positioning of the image */
+    overflow: hidden; /* To contain the image */
+    min-height: 300px; /* Ensure minimum height for the area */
 }
 
 .drop-area:hover {
@@ -840,11 +843,37 @@ p {
 
 .uploaded-image {
     max-width: 100%;
-    max-height: 300px;
+    max-height: none; /* Remove the max-height constraint */
     display: none;
-    margin: var(--space-lg) auto;
+    margin: 0; /* Remove margin */
     border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md);
+    position: absolute; /* Position absolutely */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the entire container */
+    z-index: 0; /* Place behind the text */
+}
+
+.file-selected .upload-icon,
+.file-selected #drop-text,
+.file-selected .upload-subtitle,
+.file-selected #fileSelectBtn {
+    position: relative;
+    z-index: 1; /* Keep text above the image */
+    background-color: rgba(22, 22, 26, 0.7); /* Semi-transparent background */
+    padding: var(--space-xs);
+    border-radius: var(--radius-sm);
+    margin: var(--space-xs) 0;
+}
+.file-selected .upload-icon,
+.file-selected .upload-subtitle {
+    display: none; /* Hide these elements when image is selected */
+}
+.file-selected #drop-text {
+    font-weight: 500;
+    color: var(--text-primary);
 }
 
 /* File Input */

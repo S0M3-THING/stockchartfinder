@@ -192,6 +192,9 @@ function analyzeImage() {
         } else if (data.resnet_decision === "sell") {
             finalText = "SHORT (SELL)";
             finalDecision.className = "result-value sell-text";
+        }else {
+            finalText = "NONE";
+            finalDecision.className = "result-value";
         }
 
         // Update the UI with results
@@ -201,6 +204,7 @@ function analyzeImage() {
         
         // Show results with a slight delay for better UX
         setTimeout(() => {
+            progressContainer.classList.add("hidden");
             resultContainer.classList.remove("hidden");
             resultContainer.style.opacity = "0";
             setTimeout(() => {

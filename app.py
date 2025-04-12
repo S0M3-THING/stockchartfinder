@@ -166,18 +166,26 @@ def analyze():
         closest_resnet_idx = np.argmax(similarities_resnet)
         resnet_match = database_images[closest_resnet_idx]
         confidence_resnet = float(similarities_resnet[0, closest_resnet_idx] * 100)
-        closest_image_name = image_name_map.get(resnet_match, "Unknown Image")
 
-        resnet_decision = buy_sell_mapping[resnet_match]
+        if confidence_resnet < 60:
+            result = {
+                "resnet_match": "no_pattern.jpg",
+                "resnet_confidence": confidence_resnet-30,
+                "resnet_decision": "NONE",
+                "resnet_imagename": "No Recognizable Pattern"
+            }
+        else:
+            closest_image_name = image_name_map.get(resnet_match, "Unknown Image")
+            resnet_decision = buy_sell_mapping[resnet_match]
+            result = {
+                "resnet_match": resnet_match,
+                "resnet_confidence": confidence_resnet,
+                "resnet_decision": resnet_decision,
+                "resnet_imagename": closest_image_name
+            }
+
 
         delete_old_images()
-
-        result = {
-            "resnet_match": resnet_match,
-            "resnet_confidence": confidence_resnet,
-            "resnet_decision": resnet_decision,
-            "resnet_imagename": closest_image_name
-        }
 
         response = make_response(jsonify(result))
         if not request.cookies.get('user_id'):
