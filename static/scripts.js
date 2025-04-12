@@ -91,6 +91,7 @@ function handleImagePreview(event) {
             
             // Update drop text and styles
             document.getElementById("drop-text").textContent = "Image ready for analysis";
+            document.getElementById('fileSelectBtn').textContent = 'Choose New File';
             document.getElementById("drop-area").classList.add("file-selected");
             
             // Add fade-in animation for the preview
