@@ -213,24 +213,21 @@ function analyzeImage() {
         clearInterval(interval);
         updateProgress(0);
         progressContainer.classList.add("hidden");
-        showNotification('error', 'Error', 'Something went wrong while analyzing the image.');
         
-        // Reset reCAPTCHA after error
-        grecaptcha.reset();
         
         // Handle specific error messages
         const errorMsg = error.message.toLowerCase();
         
-        if (errorMsg.includes("no image uploaded")) {
+        if (errorMsg.includes("no image")) {
             showNotification('error', 'No Image Selected', 'Please select a stock chart image to analyze!');
         } 
-        else if (errorMsg.includes("file type not allowed")) {
+        else if (errorMsg.includes("File type not allowed")) {
             showNotification('error', 'Invalid File Type', 'Please upload only JPG, JPEG, PNG, or HEIC images.');
         }
         else if (errorMsg.includes("5 per day")) {
             showNotification('error', 'Daily Limit Reached', 'You have reached your limit of 5 analyses per day. Please try again tomorrow.');
         }
-        else if (errorMsg.includes("max_content_length")) {
+        else if (errorMsg.includes("max content length")) {
             showNotification('error', 'File Too Large', 'Please select an image under 5MB in size.');
         }
         else if (errorMsg.includes("recaptcha")) {
@@ -238,7 +235,9 @@ function analyzeImage() {
         }
         else {
             showNotification('error', 'Analysis Failed', 'An error occurred while processing the image. Please try again later.');
+            //showNotification('error', 'Error', 'Something went wrong while analyzing the image.');
         }
+        grecaptcha.reset();
     });
 }
 
