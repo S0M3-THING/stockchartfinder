@@ -113,13 +113,14 @@ def delete_old_images():
 def too_large(e):
     return jsonify({"error": "max_content_length exceeded. File too large."}), 413
 
-@limiter.request_size_exceeded_handler
-def rate_limit_handler(e):
-    return jsonify({"error": "5 per day limit exceeded"}), 429
+@app.errorhandler(413)  # 413 is the HTTP status code for request entity too large
+def too_large(e):
+    return jsonify({"error": "max_content_length exceeded. File too large."}), 413
 
 @app.errorhandler(429)  # 429 is the HTTP status code for too many requests
 def ratelimit_handler(e):
     return jsonify({"error": "5 per day limit exceeded"}), 429
+
 
 @app.route('/how_we_work')
 def how_we_work():
