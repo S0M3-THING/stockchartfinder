@@ -10,8 +10,16 @@ document.addEventListener("DOMContentLoaded", function() {
     const mainContent = document.getElementById("main-content");
     const howWeWorkBtn = document.getElementById("how-we-work-link");
     const tradingSuggestionsBtn = document.getElementById("trading-suggestions-link");
-
-
+    const contactUsBtn = document.getElementById("contact-us-link");
+    
+    
+    
+    if (contactUsBtn) {
+        contactUsBtn.addEventListener("click", function(e) {
+            e.preventDefault();
+            showContactPopup();
+        });
+    }
 
     // Initialize any tooltips or advanced UI components
     initializeUI();
@@ -280,4 +288,26 @@ function resetAnalyzer() {
     // Hide results
     document.getElementById("result-container").classList.add("hidden");
     document.getElementById("progress-container").classList.add("hidden");
+}
+
+function showContactPopup() {
+    Swal.fire({
+        title: 'Contact Us',
+        html: `
+            <div style="text-align: center; padding: 10px;">
+                <div style="font-size: 2rem; margin-bottom: 15px;">
+                    <i class="material-icons" style="font-size: 3rem; color: var(--color-secondary);">contact_support</i>
+                </div>
+                <p style="margin-bottom: 20px;">Follow and message us on Instagram:</p>
+                <a href="https://instagram.com/ezpz.stocks" target="_blank" 
+                   style="display: flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; color: var(--color-primary);">
+                    <span style="font-size: 1.2rem; font-weight: 600;">@ezpz.stocks</span>
+                </a>
+            </div>
+        `,
+        background: '#16161a',
+        color: '#ffffff',
+        confirmButtonColor: '#3772ff',
+        showCloseButton: true
+    });
 }
