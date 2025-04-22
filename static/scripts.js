@@ -12,7 +12,15 @@ document.addEventListener("DOMContentLoaded", function() {
     const tradingSuggestionsBtn = document.getElementById("trading-suggestions-link");
     const contactUsBtn = document.getElementById("contact-us-link");
     
+    // Check if the user has visited before
+    const hasVisitedBefore = localStorage.getItem('skipWelcome') === 'true';
     
+    // Skip welcome screen if user has visited before
+    if (hasVisitedBefore && welcomeScreen && mainContent) {
+        welcomeScreen.style.display = "none";
+        mainContent.classList.remove("hidden");
+        mainContent.style.opacity = "1";
+    }
     
     if (contactUsBtn) {
         contactUsBtn.addEventListener("click", function(e) {
@@ -25,61 +33,81 @@ document.addEventListener("DOMContentLoaded", function() {
     initializeUI();
 
     // File selection button
-    fileSelectBtn.addEventListener("click", () => {
-        input.click();
-    });
+    if (fileSelectBtn) {
+        fileSelectBtn.addEventListener("click", () => {
+            input.click();
+        });
+    }
 
     // Drag and drop events
-    dropArea.addEventListener("dragover", (event) => {
-        event.preventDefault();
-        dropArea.classList.add("drag-over");
-    });
+    if (dropArea) {
+        dropArea.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            dropArea.classList.add("drag-over");
+        });
 
-    dropArea.addEventListener("dragleave", () => {
-        dropArea.classList.remove("drag-over");
-    });
+        dropArea.addEventListener("dragleave", () => {
+            dropArea.classList.remove("drag-over");
+        });
 
-    dropArea.addEventListener("drop", (event) => {
-        event.preventDefault();
-        dropArea.classList.remove("drag-over");
+        dropArea.addEventListener("drop", (event) => {
+            event.preventDefault();
+            dropArea.classList.remove("drag-over");
 
-        if (event.dataTransfer.files.length > 0) {
-            input.files = event.dataTransfer.files;
-            handleImagePreview({ target: input }); 
-        }
-    });
+            if (event.dataTransfer.files.length > 0) {
+                input.files = event.dataTransfer.files;
+                handleImagePreview({ target: input }); 
+            }
+        });
+    }
 
     // File input change
-    input.addEventListener("change", handleImagePreview);
+    if (input) {
+        input.addEventListener("change", handleImagePreview);
+    }
 
     // Welcome screen transition
-    enterSiteBtn.addEventListener("click", function() {
-        welcomeScreen.style.opacity = "0";
-        setTimeout(() => {
-            welcomeScreen.style.display = "none";
-            mainContent.classList.remove("hidden");
-            // Fade in main content
+    if (enterSiteBtn) {
+        enterSiteBtn.addEventListener("click", function() {
+            // Set flag in localStorage
+            localStorage.setItem('skipWelcome', 'true');
+            
+            welcomeScreen.style.opacity = "0";
             setTimeout(() => {
-                mainContent.style.opacity = "1";
-            }, 50);
-        }, 500);
-    });
+                welcomeScreen.style.display = "none";
+                mainContent.classList.remove("hidden");
+                // Fade in main content
+                setTimeout(() => {
+                    mainContent.style.opacity = "1";
+                }, 50);
+            }, 500);
+        });
+    }
 
     // Navigation
-    howWeWorkBtn.addEventListener("click", function(e) {
-        e.preventDefault();
-        navigateTo("/how_we_work");
-    });
+    if (howWeWorkBtn) {
+        howWeWorkBtn.addEventListener("click", function(e) {
+            e.preventDefault();
+            navigateTo("/how_we_work");
+        });
+    }
 
-    tradingSuggestionsBtn.addEventListener("click", function(e) {
-        e.preventDefault();
-        navigateTo("/trading_suggestions");
-    });
+    if (tradingSuggestionsBtn) {
+        tradingSuggestionsBtn.addEventListener("click", function(e) {
+            e.preventDefault();
+            navigateTo("/trading_suggestions");
+        });
+    }
 
-    // Apply initial styles
-    mainContent.style.opacity = "0";
-    mainContent.style.transition = "opacity 0.5s ease";
-    welcomeScreen.style.transition = "opacity 0.5s ease";
+    // Apply initial styles if elements exist
+    if (mainContent && !hasVisitedBefore) {
+        mainContent.style.opacity = "0";
+        mainContent.style.transition = "opacity 0.5s ease";
+    }
+    
+    if (welcomeScreen && !hasVisitedBefore) {
+        welcomeScreen.style.transition = "opacity 0.5s ease";
+    }
 });
 
 function initializeUI() {
@@ -267,6 +295,9 @@ function showNotification(type, title, message) {
 }
 
 function navigateTo(url) {
+    // Set flag in localStorage before navigating
+    localStorage.setItem('skipWelcome', 'true');
+    
     // Optional: add a fade-out transition before navigation
     document.body.style.opacity = "0";
     setTimeout(() => {
