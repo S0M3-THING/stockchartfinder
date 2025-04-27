@@ -12,10 +12,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const tradingSuggestionsBtn = document.getElementById("trading-suggestions-link");
     const contactUsBtn = document.getElementById("contact-us-link");
     
-    // Check if the user has visited before
-    const hasVisitedBefore = localStorage.getItem('skipWelcome') === 'true';
+    // Check if the user has visited before in this session
+    const hasVisitedBefore = sessionStorage.getItem('skipWelcome') === 'true';
     
-    // Skip welcome screen if user has visited before
+    // Skip welcome screen if user has visited before in this session
     if (hasVisitedBefore && welcomeScreen && mainContent) {
         welcomeScreen.style.display = "none";
         mainContent.classList.remove("hidden");
@@ -69,8 +69,8 @@ document.addEventListener("DOMContentLoaded", function() {
     // Welcome screen transition
     if (enterSiteBtn) {
         enterSiteBtn.addEventListener("click", function() {
-            // Set flag in localStorage
-            localStorage.setItem('skipWelcome', 'true');
+            // Set flag in sessionStorage instead of localStorage
+            sessionStorage.setItem('skipWelcome', 'true');
             
             welcomeScreen.style.opacity = "0";
             setTimeout(() => {
@@ -295,8 +295,8 @@ function showNotification(type, title, message) {
 }
 
 function navigateTo(url) {
-    // Set flag in localStorage before navigating
-    localStorage.setItem('skipWelcome', 'true');
+    // Set flag in sessionStorage instead of localStorage before navigating
+    sessionStorage.setItem('skipWelcome', 'true');
     
     // Optional: add a fade-out transition before navigation
     document.body.style.opacity = "0";
