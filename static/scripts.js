@@ -263,13 +263,13 @@ function analyzeImage() {
         if (errorMsg.includes("no image")) {
             showNotification('error', 'No Image Selected', 'Please select a stock chart image to analyze!');
         } 
-        else if (errorMsg.includes("File type not allowed")) {
+        else if (errorMsg.includes("file type not allowed")) {
             showNotification('error', 'Invalid File Type', 'Please upload only JPG, JPEG, PNG, or HEIC images.');
         }
         else if (errorMsg.includes("5 per day")) {
             showNotification('error', 'Daily Limit Reached', 'You have reached your limit of 5 analyses per day. Please try again tomorrow.');
         }
-        else if (errorMsg.includes("max content length")) {
+        else if (errorMsg.includes("max_content_length")) {
             showNotification('error', 'File Too Large', 'Please select an image under 5MB in size.');
         }
         else if (errorMsg.includes("recaptcha")) {

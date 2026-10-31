@@ -84,7 +84,7 @@ Other pages are available at `/how_we_work` and `/trading_suggestions`.
 
 ## Development notes and limitations
 
-- There is no automated test suite or CI workflow in this repository.
+- Browser upload-error regressions can be checked with Node.js 18+ using `node --test tests/upload_errors.test.cjs`. These tests run the actual error handler with mocked browser and network boundaries. They cover unsupported files, oversized requests, rate limits, reCAPTCHA failures, and unexpected errors. They do not test model inference. There is no CI workflow in this repository.
 - No end-to-end startup or upload verification is claimed by this guide. Runtime checks need compatible dependencies, model weights, and working reCAPTCHA configuration.
 - Upload cleanup currently removes all files in `uploads/`, which can interfere with concurrent requests; error paths may leave files behind.
 - The built-in startup block creates `uploads/`. Alternative WSGI entry points must ensure the directory exists before accepting uploads.
