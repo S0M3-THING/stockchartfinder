@@ -14,8 +14,10 @@ const cases = [
   ['Unexpected server failure', 'Analysis Failed'],
 ];
 
-for (const [message, title] of cases) {
-  test(message, async () => {
+cases.push(['Unexpected server failure', 'Analysis Failed', { name: 'chart.PNG', type: '' }]);
+
+for (const [message, title, file = { type: 'image/png' }] of cases) {
+  test(file.name ? "supported extension with missing MIME type" : message, async () => {
     const notifications = [];
     let resets = 0;
     const context = vm.createContext({
@@ -23,7 +25,7 @@ for (const [message, title] of cases) {
         addEventListener() {},
         getElementById() {
           return {
-            files: [{ size: 10, type: 'image/png' }],
+            files: [{ size: 10, ...file }],
             classList: { add() {}, remove() {} },
             style: {},
           };

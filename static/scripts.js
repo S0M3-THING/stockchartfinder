@@ -168,7 +168,9 @@ function analyzeImage() {
     }
 
     // Check file type
-    const fileType = input.type.split('/')[1];
+    const fileType = input.type
+        ? input.type.split('/')[1] || ''
+        : input.name.match(/\.([^.]+)$/)?.[1] || '';
     const allowedTypes = ['jpg', 'jpeg', 'png', 'heic'];
     if (!allowedTypes.includes(fileType.toLowerCase())) {
         showNotification('error', 'Invalid File Type', 'Please upload only JPG, JPEG, PNG, or HEIC images.');
